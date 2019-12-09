@@ -35,10 +35,7 @@ def create_receipt(for_what, amount, event, paid_by, bought_by):
     :return: new Receipt object
     """
     receipt = Receipt.objects.create(
-        for_what=for_what,
-        amount=amount,
-        event=event,
-        paid_by=paid_by
+        for_what=for_what, amount=amount, event=event, paid_by=paid_by
     )
     receipt.bought_by.add(bought_by)
     return receipt
