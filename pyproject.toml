@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "shared-bills"
+version = "0.1.0"
+description = ""
+authors = ["Piotr Kozieł <koziel.piotr1988@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+django = "^3.0"
+djangorestframework = "^3.10"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.4"
+black = {version = "19.3b0", allows-prereleases = true}
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
