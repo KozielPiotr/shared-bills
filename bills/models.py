@@ -35,7 +35,9 @@ class Bill(models.Model):
     """Single bill, eg. for car, food, fuel etc."""
 
     title = models.CharField(max_length=100)
-    amount = MoneyField(max_digits=7, decimal_places=2, default_currency="PLN", default=0)
+    amount = MoneyField(
+        max_digits=7, decimal_places=2, default_currency="PLN", default=0
+    )
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     payer = models.ForeignKey(
         Participant,
@@ -55,11 +57,17 @@ class Payment(models.Model):
 
     title = models.CharField(max_length=500)
     issuer = models.ForeignKey(
-        Participant, on_delete=models.CASCADE, related_name="paid")
+        Participant, on_delete=models.CASCADE, related_name="paid"
+    )
     acquirer = models.ForeignKey(
-        Participant, on_delete=models.CASCADE, related_name="acquired")
+        Participant, on_delete=models.CASCADE, related_name="acquired"
+    )
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
-    amount = MoneyField(max_digits=7, decimal_places=2, default_currency="PLN", default=0)
+    amount = MoneyField(
+        max_digits=7, decimal_places=2, default_currency="PLN", default=0
+    )
 
     def __str__(self):
-        return "{} to {} for {} ({})".format(self.issuer, self.acquirer, self.title, self.event)
+        return "{} to {} for {} ({})".format(
+            self.issuer, self.acquirer, self.title, self.event
+        )
