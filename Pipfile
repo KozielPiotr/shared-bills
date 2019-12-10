@@ -11,6 +11,7 @@ pylint = "*"
 [packages]
 django = "==3.0"
 djangorestframework = "==3.10.3"
+django-money = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"

@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "bills_app",
-    # 'bills_app.apps.BillsAppConfig',
+    "djmoney",
+    "bills",
 ]
 
 MIDDLEWARE = [
@@ -95,8 +95,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-
-AUTH_USER_MODEL = "bills_app.CustomUser"
 
 
 # Internationalization

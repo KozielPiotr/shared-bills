@@ -1,4 +1,4 @@
-"""Views for bills_app."""
+"""Views for bills application."""
 
 # from django.shortcuts import render
 
