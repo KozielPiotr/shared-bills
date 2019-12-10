@@ -10,7 +10,11 @@ class Participant(models.Model):
 
     username = models.CharField(max_length=100)
     event = models.ForeignKey(
-        "Event", null=True, blank=True, on_delete=models.CASCADE, related_name="participants"
+        "Event",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="participants",
     )
 
     def __str__(self):
