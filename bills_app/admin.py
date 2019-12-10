@@ -9,6 +9,7 @@ from .models import CustomUser, Event, Payment, Receipt
 
 class CustomUserAdmin(UserAdmin):
     """Admin view for Custom User."""
+
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
@@ -17,18 +18,21 @@ class CustomUserAdmin(UserAdmin):
 
 class EventAdmin(admin.ModelAdmin):
     """Admin view for Event."""
+
     model = Event
     list_display = ["name", "cashier"]
 
 
 class ReceiptAdmin(admin.ModelAdmin):
     """Admin view for Receipt."""
+
     model = Receipt
     list_display = ["for_what", "amount", "event"]
 
 
 class PaymentAdmin(admin.ModelAdmin):
     """Admin view for Payment."""
+
     model = Payment
     fields = ("who_pays", "for_who", "event")
 
