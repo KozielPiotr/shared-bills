@@ -9,6 +9,7 @@ class Participant(models.Model):
     """Model for event's participants."""
 
     username = models.CharField(max_length=100)
+    event = models.ForeignKey("Event", null=True, blank=True, on_delete=models.CASCADE, related_name="participants")
 
     def __str__(self):
         return self.username
@@ -25,7 +26,6 @@ class Event(models.Model):
         on_delete=models.SET_NULL,
         related_name="paymaster",
     )
-    participants = models.ManyToManyField(Participant, related_name="participates")
 
     def __str__(self):
         return self.name
@@ -57,12 +57,12 @@ class Payment(models.Model):
 
     title = models.CharField(max_length=500)
     issuer = models.ForeignKey(
-        Participant, on_delete=models.CASCADE, related_name="paid"
+        Participant, on_delete=models.PROTECT, related_name="paid"
     )
     acquirer = models.ForeignKey(
-        Participant, on_delete=models.CASCADE, related_name="acquired"
+        Participant, on_delete=models.PROTECT, related_name="acquired"
     )
-    event = models.ForeignKey(Event, on_delete=models.PROTECT)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     amount = MoneyField(
         max_digits=7, decimal_places=2, default_currency="PLN", default=0
     )

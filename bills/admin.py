@@ -10,7 +10,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     """Admin view for Custom User."""
 
     model = Participant
-    list_display = ["username"]
+    list_display = ["username", "event"]
 
 
 class EventAdmin(admin.ModelAdmin):

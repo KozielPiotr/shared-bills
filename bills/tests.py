@@ -25,18 +25,18 @@ def create_event(name):
     return Event.objects.create(name=name)
 
 
-def create_bill(title, amount, event, payer, bought_by):
+def create_bill(title, amount, event, payer, participants):
     """
     Creates new Bill object.
     :param title: string with data for representation
     :param amount: decimal with price
     :param event: Event object to make relationship
     :param payer: Participant object to make relationship
-    :param bought_by: list of Participant objects to make relationship
+    :param participants: list of Participant objects to make relationship
     :return: new Bill object
     """
     bill = Bill.objects.create(
         title=title, balance=Money(amount, "PLN"), event=event, payer=payer
     )
-    bill.bought_by.add(bought_by)
+    bill.participants.add(participants)
     return bill
