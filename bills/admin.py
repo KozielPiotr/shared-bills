@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 """Settings for admin."""
 
 from django.contrib import admin

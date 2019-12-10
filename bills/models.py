@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 """Models for bills application."""
 
 from djmoney.models.fields import MoneyField
