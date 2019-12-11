@@ -8,7 +8,7 @@ from django.db import models
 class Participant(models.Model):
     """Model for event's participants."""
 
-    username = models.CharField(max_length=100)
+    username = models.CharField(max_length=100, unique=True)
     event = models.ForeignKey(
         "Event",
         null=True,
