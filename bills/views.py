@@ -1,7 +1,9 @@
-# pylint: disable=too-many-ancestors,no-member
+# pylint: disable=too-many-ancestors,no-member, unused-argument
 """Views for bills application."""
 
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from bills import models, serializers
 
@@ -18,6 +20,16 @@ class EventViewset(viewsets.ModelViewSet):
 
     queryset = models.Event.objects.all()
     serializer_class = serializers.EventSerializer
+
+    @action(detail=True, methods=["GET"])
+    def event_participants(self, request, *args, **kwargs):
+        """Returns all participants related to the event"""
+        event = self.get_object()
+        queryset = event.participants.all()
+        serializer = serializers.ParticipantSerializer(
+            queryset, many=True, context={"request": request}
+        )
+        return Response(serializer.data)
 
 
 class BillViewset(viewsets.ModelViewSet):
