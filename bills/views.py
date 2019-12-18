@@ -2,45 +2,30 @@
 """Views for bills application."""
 
 from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
-
-from bills import models, serializers
 
 
-class ParticipantViewset(viewsets.ModelViewSet):
-    """Participant viewset"""
+def create_viewset(serializer, model, nested):
+    """
+    Creates viewsets for objects related to the Event object
+    :param serializer:
+    :param serializer: serializer class
+    :param model: database model
+    :param nested: if True, get_query function is overwritten, else queryset variable is set
+    :return: new viewset class
+    """
 
-    queryset = models.Participant.objects.all()
-    serializer_class = serializers.ParticipantSerializer
+    class EventRelationshipsViewset(viewsets.ModelViewSet):
+        """Viewsets for objects related to the Event object"""
 
+        serializer_class = serializer
+        if nested:
 
-class EventViewset(viewsets.ModelViewSet):
-    """Event viewset"""
+            def get_queryset(self):
+                """Query of all Participant objects being related to the given Event"""
 
-    queryset = models.Event.objects.all()
-    serializer_class = serializers.EventSerializer
+                return model.objects.filter(event=self.kwargs["event_pk"])
 
-    @action(detail=True, methods=["GET"])
-    def event_participants(self, request, *args, **kwargs):
-        """Returns all participants related to the event"""
-        event = self.get_object()
-        queryset = event.participants.all()
-        serializer = serializers.ParticipantSerializer(
-            queryset, many=True, context={"request": request}
-        )
-        return Response(serializer.data)
+        else:
+            queryset = model.objects.all()
 
-
-class BillViewset(viewsets.ModelViewSet):
-    """Bill viewset"""
-
-    queryset = models.Bill.objects.all()
-    serializer_class = serializers.BillSerializer
-
-
-class PaymentViewset(viewsets.ModelViewSet):
-    """Bill viewset"""
-
-    queryset = models.Payment.objects.all()
-    serializer_class = serializers.PaymentSerializer
+    return EventRelationshipsViewset

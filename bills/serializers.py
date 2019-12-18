@@ -13,6 +13,15 @@ class EventSerializer(ModelSerializer):
     """Serializer for Event object"""
 
     url = HyperlinkedIdentityField(view_name="event-detail")
+    participants_url = HyperlinkedIdentityField(
+        view_name="event-participants-list", lookup_url_kwarg="event_pk"
+    )
+    bills_url = HyperlinkedIdentityField(
+        view_name="event-bills-list", lookup_url_kwarg="event_pk"
+    )
+    payments_url = HyperlinkedIdentityField(
+        view_name="event-payments-list", lookup_url_kwarg="event_pk"
+    )
 
     class Meta:
         model = Event
