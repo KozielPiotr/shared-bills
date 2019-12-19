@@ -1,31 +1,69 @@
 # pylint: disable=too-many-ancestors,no-member, unused-argument
 """Views for bills application."""
 
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 
+from .models import Event
 
-def create_viewset(serializer, model, nested):
+
+def create_nested_viewset(serializer_obj, model):
     """
     Creates viewsets for objects related to the Event object
-    :param serializer:
+    :param serializer_obj: serializer class
+    :param model: database model
+    :return: new viewset class
+    """
+
+    class Viewset(viewsets.ModelViewSet):
+        """Viewsets for objects related to the Event object"""
+
+        def __init__(self, *args, **kwargs):
+            self.__class__.__name__ = "{}".format(model.__name__)
+            super().__init__(*args, **kwargs)
+
+        serializer_class = serializer_obj
+        event = None
+
+        def perform_create(self, serializer):
+            serializer.save(event=self.event)
+
+        def get_queryset(self):
+            """Query of all Participant objects being related to the given Event"""
+
+            return model.objects.filter(event=self.kwargs["event_pk"])
+
+        def get_event(self):
+            """Gets queryset for Event objects with given pk"""
+
+            query = Event.objects.filter(pk=self.kwargs["event_pk"])
+            return get_object_or_404(query)
+
+        def create(self, request, *args, **kwargs):
+            """Creates a model instance"""
+
+            self.event = self.get_event()
+            return super(Viewset, self).create(request, *args, **kwargs)
+
+    return Viewset
+
+
+def create_viewset(serializer, model):
+    """
+    Creates viewsets for objects related to the Event object
     :param serializer: serializer class
     :param model: database model
-    :param nested: if True, get_query function is overwritten, else queryset variable is set
     :return: new viewset class
     """
 
     class EventRelationshipsViewset(viewsets.ModelViewSet):
         """Viewsets for objects related to the Event object"""
 
+        def __init__(self, *args, **kwargs):
+            self.__class__.__name__ = "{}".format(model.__name__)
+            super().__init__(*args, **kwargs)
+
         serializer_class = serializer
-        if nested:
-
-            def get_queryset(self):
-                """Query of all Participant objects being related to the given Event"""
-
-                return model.objects.filter(event=self.kwargs["event_pk"])
-
-        else:
-            queryset = model.objects.all()
+        queryset = model.objects.all()
 
     return EventRelationshipsViewset

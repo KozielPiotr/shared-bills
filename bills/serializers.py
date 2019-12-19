@@ -4,7 +4,11 @@ Serializers for bills application.
 Id fields left to facilitate frontend work.
 """
 
-from rest_framework.serializers import HyperlinkedIdentityField, ModelSerializer
+from rest_framework.serializers import (
+    HyperlinkedIdentityField,
+    ModelSerializer,
+    HiddenField,
+)
 
 from .models import Bill, Event, Participant, Payment
 
@@ -38,6 +42,12 @@ class ParticipantSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class ParticipantNestedSerializer(ParticipantSerializer):
+    """Serializer for nested Participant object"""
+
+    event = HiddenField(default=None)
+
+
 class BillSerializer(ModelSerializer):
     """Serializer for Bill object"""
 
@@ -48,6 +58,12 @@ class BillSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class BillNestedSerializer(BillSerializer):
+    """Serializer for nested Bill object"""
+
+    event = HiddenField(default=None)
+
+
 class PaymentSerializer(ModelSerializer):
     """Serializer for Payment object"""
 
@@ -56,3 +72,9 @@ class PaymentSerializer(ModelSerializer):
     class Meta:
         model = Payment
         fields = "__all__"
+
+
+class PaymentNestedSerializer(PaymentSerializer):
+    """Serializer for nested Payment object"""
+
+    event = HiddenField(default=None)
