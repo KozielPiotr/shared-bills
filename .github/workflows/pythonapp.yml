@@ -17,11 +17,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install pipenv
           pipenv install --deploy --system --dev
-      - name: Set SECRET_KEY
-        run: export SECRET_KEY="dummy"
       - name: Pylint
         run: pylint shared_bills bills
       - name: Black
         run: black --check ./
       - name: Pytest
         run: pytest
+        env:
+          SECRET_KEY: dummy
