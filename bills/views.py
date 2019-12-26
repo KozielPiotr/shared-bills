@@ -15,7 +15,7 @@ def create_nested_viewset(serializer_obj, model):
     :return: new viewset class
     """
 
-    class Viewset(viewsets.ModelViewSet):
+    class RelationshipViewset(viewsets.ModelViewSet):
         """Viewsets for objects related to the Event object"""
 
         def __init__(self, *args, **kwargs):
@@ -43,21 +43,21 @@ def create_nested_viewset(serializer_obj, model):
             """Creates a model instance"""
 
             self.event = self.get_event()
-            return super(Viewset, self).create(request, *args, **kwargs)
+            return super(RelationshipViewset, self).create(request, *args, **kwargs)
 
-    return Viewset
+    return RelationshipViewset
 
 
 def create_viewset(serializer, model):
     """
-    Creates viewsets for objects related to the Event object
+    Creates detailed viewsets for database objects
     :param serializer: serializer class
     :param model: database model
     :return: new viewset class
     """
 
-    class EventRelationshipsViewset(viewsets.ModelViewSet):
-        """Viewsets for objects related to the Event object"""
+    class Viewset(viewsets.ModelViewSet):
+        """Viewset for non-nested objects"""
 
         def __init__(self, *args, **kwargs):
             self.__class__.__name__ = "{}".format(model.__name__)
@@ -66,4 +66,4 @@ def create_viewset(serializer, model):
         serializer_class = serializer
         queryset = model.objects.all()
 
-    return EventRelationshipsViewset
+    return Viewset

@@ -24,6 +24,8 @@ six = "==1.13.0"
 toml = "==0.10.0"
 wcwidth = "==0.1.7"
 wrapt = "==1.11.2"
+coverage = "*"
+pytest-django = "*"
 
 [packages]
 asgiref = "==3.2.3"
@@ -34,7 +36,7 @@ py-moneyed = "==0.8.0"
 pytz = "==2019.3"
 sqlparse = "==0.3.0"
 Django = "==3.0"
-drf-nested-routers = "*"
+drf-nested-routers = "==0.91"
 
 [requires]
 python_version = "3.8"

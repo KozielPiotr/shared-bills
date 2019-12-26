@@ -20,17 +20,17 @@ event_router = NestedSimpleRouter(router, "events", lookup="event")
 event_router.register(
     "participants",
     create_nested_viewset(serializers.ParticipantNestedSerializer, models.Participant),
-    base_name="event-participants",
+    basename="event-participants",
 )
 event_router.register(
     "bills",
     create_nested_viewset(serializers.BillNestedSerializer, models.Bill),
-    base_name="event-bills",
+    basename="event-bills",
 )
 event_router.register(
     "payments",
     create_nested_viewset(serializers.PaymentSerializer, models.Payment),
-    base_name="event-payments",
+    basename="event-payments",
 )
 
 router.register("bills", create_viewset(serializers.BillSerializer, models.Bill))
@@ -38,4 +38,5 @@ router.register(
     "payments", create_viewset(serializers.PaymentSerializer, models.Payment)
 )
 
+# app_name = "bills"
 urlpatterns = [path("", include(router.urls)), path("", include(event_router.urls))]
