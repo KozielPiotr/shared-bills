@@ -127,10 +127,9 @@ def test_put_event(sample_event):
     assert sample_event in Event.objects.filter(name=sample_event.name)
     assert Event.objects.filter(name=changed_event_data["name"]).count() == 0
     client = APIClient()
-    event_data = {"name": "new test event"}
     response = client.put(
         reverse("event-detail", kwargs={"pk": sample_event.pk}),
-        event_data,
+        changed_event_data,
         format="json",
     )
     assert response.status_code == status.HTTP_200_OK
