@@ -24,8 +24,8 @@ six = "==1.13.0"
 toml = "==0.10.0"
 wcwidth = "==0.1.7"
 wrapt = "==1.11.2"
-coverage = "*"
-pytest-django = "*"
+coverage = "==5.0"
+pytest-django = "==3.7.0"
 
 [packages]
 asgiref = "==3.2.3"

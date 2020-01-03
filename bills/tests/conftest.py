@@ -70,7 +70,7 @@ def sample_bill(sample_event):
 def sample_bill_2(sample_event):
     """Creates new Bill object"""
 
-    bill = Bill(title="test bill", event=sample_event)
+    bill = Bill(title="test bill 2", event=sample_event)
     if bill not in Bill.objects.all():
         yield create(bill)
     if bill in Bill.objects.all():

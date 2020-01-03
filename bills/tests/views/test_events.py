@@ -15,25 +15,23 @@ def test_get_events(sample_event, sample_event_2):
     """Request should return all Event objects data"""
 
     client = APIClient()
-    response = client.get(reverse("event-list"), format="json")
+    response = client.get(reverse("events-list"), format="json")
     assert response.status_code == status.HTTP_200_OK
     assert json.dumps(response.data) == json.dumps(
         [
             {
                 "id": sample_event.id,
                 "url": r"http://testserver{}".format(
-                    reverse("event-detail", kwargs={"pk": sample_event.pk})
+                    reverse("events-detail", kwargs={"pk": sample_event.pk})
                 ),
                 "participants_url": r"http://testserver{}".format(
-                    reverse(
-                        "event-participants-list", kwargs={"event_pk": sample_event.pk}
-                    )
+                    reverse("participants-list", kwargs={"event_pk": sample_event.pk})
                 ),
                 "bills_url": r"http://testserver{}".format(
-                    reverse("event-bills-list", kwargs={"event_pk": sample_event.pk})
+                    reverse("bills-list", kwargs={"event_pk": sample_event.pk})
                 ),
                 "payments_url": r"http://testserver{}".format(
-                    reverse("event-payments-list", kwargs={"event_pk": sample_event.pk})
+                    reverse("payments-list", kwargs={"event_pk": sample_event.pk})
                 ),
                 "name": sample_event.name,
                 "paymaster": sample_event.paymaster,
@@ -41,21 +39,16 @@ def test_get_events(sample_event, sample_event_2):
             {
                 "id": sample_event_2.id,
                 "url": "http://testserver{}".format(
-                    reverse("event-detail", kwargs={"pk": sample_event_2.pk})
+                    reverse("events-detail", kwargs={"pk": sample_event_2.pk})
                 ),
                 "participants_url": "http://testserver{}".format(
-                    reverse(
-                        "event-participants-list",
-                        kwargs={"event_pk": sample_event_2.pk},
-                    )
+                    reverse("participants-list", kwargs={"event_pk": sample_event_2.pk})
                 ),
                 "bills_url": "http://testserver{}".format(
-                    reverse("event-bills-list", kwargs={"event_pk": sample_event_2.pk})
+                    reverse("bills-list", kwargs={"event_pk": sample_event_2.pk})
                 ),
                 "payments_url": "http://testserver{}".format(
-                    reverse(
-                        "event-payments-list", kwargs={"event_pk": sample_event_2.pk}
-                    )
+                    reverse("payments-list", kwargs={"event_pk": sample_event_2.pk})
                 ),
                 "name": sample_event_2.name,
                 "paymaster": sample_event_2.paymaster,
@@ -70,22 +63,22 @@ def test_get_event(sample_event):
 
     client = APIClient()
     response = client.get(
-        reverse("event-detail", kwargs={"pk": sample_event.pk}), format="json"
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
     )
     assert response.status_code == status.HTTP_200_OK
     assert response.data == {
         "id": sample_event.id,
         "url": "http://testserver{}".format(
-            reverse("event-detail", kwargs={"pk": sample_event.pk})
+            reverse("events-detail", kwargs={"pk": sample_event.pk})
         ),
         "participants_url": "http://testserver{}".format(
-            reverse("event-participants-list", kwargs={"event_pk": sample_event.pk})
+            reverse("participants-list", kwargs={"event_pk": sample_event.pk})
         ),
         "bills_url": "http://testserver{}".format(
-            reverse("event-bills-list", kwargs={"event_pk": sample_event.pk})
+            reverse("bills-list", kwargs={"event_pk": sample_event.pk})
         ),
         "payments_url": "http://testserver{}".format(
-            reverse("event-payments-list", kwargs={"event_pk": sample_event.pk})
+            reverse("payments-list", kwargs={"event_pk": sample_event.pk})
         ),
         "name": sample_event.name,
         "paymaster": sample_event.paymaster,
@@ -99,7 +92,7 @@ def test_post_event():
     assert Event.objects.filter(name="new test event").count() == 0
     client = APIClient()
     event_data = {"name": "new test event"}
-    response = client.post(reverse("event-list"), event_data, format="json")
+    response = client.post(reverse("events-list"), event_data, format="json")
     assert response.status_code == status.HTTP_201_CREATED
     assert Event.objects.filter(name="new test event").count() == 1
 
@@ -111,7 +104,7 @@ def test_delete_event(sample_event):
     assert sample_event in Event.objects.filter(name=sample_event.name)
     client = APIClient()
     response = client.delete(
-        reverse("event-detail", kwargs={"pk": sample_event.pk}),
+        reverse("events-detail", kwargs={"pk": sample_event.pk}),
         format="json",
         follow=True,
     )
@@ -128,7 +121,7 @@ def test_put_event(sample_event):
     assert Event.objects.filter(name=changed_event_data["name"]).count() == 0
     client = APIClient()
     response = client.put(
-        reverse("event-detail", kwargs={"pk": sample_event.pk}),
+        reverse("events-detail", kwargs={"pk": sample_event.pk}),
         changed_event_data,
         format="json",
     )

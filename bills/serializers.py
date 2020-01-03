@@ -9,22 +9,22 @@ from rest_framework.serializers import (
     ModelSerializer,
     HiddenField,
 )
-
+from rest_framework_nested.relations import NestedHyperlinkedIdentityField
 from .models import Bill, Event, Participant, Payment
 
 
 class EventSerializer(ModelSerializer):
     """Serializer for Event object"""
 
-    url = HyperlinkedIdentityField(view_name="event-detail")
+    url = HyperlinkedIdentityField(view_name="events-detail")
     participants_url = HyperlinkedIdentityField(
-        view_name="event-participants-list", lookup_url_kwarg="event_pk"
+        view_name="participants-list", lookup_url_kwarg="event_pk"
     )
     bills_url = HyperlinkedIdentityField(
-        view_name="event-bills-list", lookup_url_kwarg="event_pk"
+        view_name="bills-list", lookup_url_kwarg="event_pk"
     )
     payments_url = HyperlinkedIdentityField(
-        view_name="event-payments-list", lookup_url_kwarg="event_pk"
+        view_name="payments-list", lookup_url_kwarg="event_pk"
     )
 
     class Meta:
@@ -35,46 +35,37 @@ class EventSerializer(ModelSerializer):
 class ParticipantSerializer(ModelSerializer):
     """Serializer for Participant object"""
 
-    url = HyperlinkedIdentityField(view_name="participant-detail")
+    url = NestedHyperlinkedIdentityField(
+        view_name="participants-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
+    )
+    event = HiddenField(default=None)
 
     class Meta:
         model = Participant
         fields = "__all__"
 
 
-class ParticipantNestedSerializer(ParticipantSerializer):
-    """Serializer for nested Participant object"""
-
-    event = HiddenField(default=None)
-
-
 class BillSerializer(ModelSerializer):
     """Serializer for Bill object"""
 
-    url = HyperlinkedIdentityField(view_name="bill-detail")
+    url = NestedHyperlinkedIdentityField(
+        view_name="bills-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
+    )
+    event = HiddenField(default=None)
 
     class Meta:
         model = Bill
         fields = "__all__"
 
 
-class BillNestedSerializer(BillSerializer):
-    """Serializer for nested Bill object"""
-
-    event = HiddenField(default=None)
-
-
 class PaymentSerializer(ModelSerializer):
     """Serializer for Payment object"""
 
-    url = HyperlinkedIdentityField(view_name="payment-detail")
+    url = NestedHyperlinkedIdentityField(
+        view_name="payments-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
+    )
+    event = HiddenField(default=None)
 
     class Meta:
         model = Payment
         fields = "__all__"
-
-
-class PaymentNestedSerializer(PaymentSerializer):
-    """Serializer for nested Payment object"""
-
-    event = HiddenField(default=None)
