@@ -23,10 +23,6 @@ def create_nested_viewset(serializer_obj, model):
             super().__init__(*args, **kwargs)
 
         serializer_class = serializer_obj
-        event = None
-
-        def perform_create(self, serializer):
-            serializer.save(event=self.event)
 
         def get_queryset(self):
             """Query of all Participant objects being related to the given Event"""
@@ -38,12 +34,6 @@ def create_nested_viewset(serializer_obj, model):
 
             query = Event.objects.filter(pk=self.kwargs["event_pk"])
             return get_object_or_404(query)
-
-        def create(self, request, *args, **kwargs):
-            """Creates a model instance"""
-
-            self.event = self.get_event()
-            return super(RelationshipViewset, self).create(request, *args, **kwargs)
 
     return RelationshipViewset
 

@@ -32,39 +32,46 @@ class EventSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class ParticipantSerializer(ModelSerializer):
+class EventResourceSerializer(ModelSerializer):
+    """Base serializer for event related models"""
+
+    event = HiddenField(default=None)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["event"].default = self.context["view"].get_event()
+
+
+class ParticipantSerializer(EventResourceSerializer):
     """Serializer for Participant object"""
 
     url = NestedHyperlinkedIdentityField(
         view_name="participants-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
     )
-    event = HiddenField(default=None)
 
     class Meta:
         model = Participant
         fields = "__all__"
 
 
-class BillSerializer(ModelSerializer):
+class BillSerializer(EventResourceSerializer):
     """Serializer for Bill object"""
 
     url = NestedHyperlinkedIdentityField(
         view_name="bills-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
     )
-    event = HiddenField(default=None)
 
     class Meta:
         model = Bill
         fields = "__all__"
 
 
-class PaymentSerializer(ModelSerializer):
+class PaymentSerializer(EventResourceSerializer):
     """Serializer for Payment object"""
 
     url = NestedHyperlinkedIdentityField(
         view_name="payments-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
     )
-    event = HiddenField(default=None)
 
     class Meta:
         model = Payment
