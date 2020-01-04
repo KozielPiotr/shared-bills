@@ -44,7 +44,7 @@ class Bill(models.Model):
     amount = MoneyField(
         max_digits=7, decimal_places=2, default_currency="PLN", default=0
     )
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="bills")
     payer = models.ForeignKey(
         Participant,
         null=True,
