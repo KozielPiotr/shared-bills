@@ -6,15 +6,11 @@ from rest_framework_nested import routers
 from rest_framework.routers import DefaultRouter
 
 from bills import models, serializers
-from bills.views import create_nested_viewset, create_viewset
+from bills.views import create_nested_viewset, EventViewset
 
 
 router = DefaultRouter()
-router.register(
-    "events",
-    create_viewset(serializers.EventSerializer, models.Event),
-    basename="events",
-)
+router.register("events", EventViewset, basename="events")
 
 event_router = routers.NestedSimpleRouter(router, "events", lookup="event")
 event_router.register(

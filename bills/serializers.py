@@ -121,10 +121,13 @@ class EventSerializer(ModelSerializer):
     payments_url = HyperlinkedIdentityField(
         view_name="payments-list", lookup_url_kwarg="event_pk"
     )
-    participants = ParticipantNestedSerializer(many=True, read_only=True)
-    bills = BillNestedSerializer(many=True, read_only=True)
-    payments = PaymentNestedSerializer(many=True, read_only=True)
 
     class Meta:
         model = Event
         fields = "__all__"
+
+
+class EventRetrieveSerializer(EventSerializer):
+    participants = ParticipantNestedSerializer(many=True, read_only=True)
+    bills = BillNestedSerializer(many=True, read_only=True)
+    payments = PaymentNestedSerializer(many=True, read_only=True)
