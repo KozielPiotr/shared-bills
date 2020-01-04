@@ -1,4 +1,4 @@
-# pylint: disable=no-member
+# pylint: disable=no-member, bad-continuation
 """Tests for bills event views."""
 
 import json
@@ -11,10 +11,16 @@ from bills.models import Event
 
 
 @pytest.mark.django_db
-def test_get_events(sample_event, sample_event_2):
+def test_get_events(
+    sample_event, sample_event_2, sample_participant, sample_bill, sample_payment
+):
     """Request should return all Event objects data"""
 
     client = APIClient()
+    sample_event.participants.add(sample_participant)
+    sample_event.bills.add(sample_bill)
+    sample_event.payments.add(sample_payment)
+    sample_event.save()
     response = client.get(reverse("events-list"), format="json")
     assert response.status_code == status.HTTP_200_OK
     assert json.dumps(response.data) == json.dumps(
@@ -33,6 +39,62 @@ def test_get_events(sample_event, sample_event_2):
                 "payments_url": r"http://testserver{}".format(
                     reverse("payments-list", kwargs={"event_pk": sample_event.pk})
                 ),
+                "participants": [
+                    {
+                        "id": sample_participant.id,
+                        "url": r"http://testserver{}".format(
+                            reverse(
+                                "participants-detail",
+                                kwargs={
+                                    "event_pk": sample_event.pk,
+                                    "pk": sample_participant.pk,
+                                },
+                            )
+                        ),
+                        "username": sample_participant.username,
+                        "event": sample_event.id,
+                    }
+                ],
+                "bills": [
+                    {
+                        "id": sample_bill.id,
+                        "url": r"http://testserver{}".format(
+                            reverse(
+                                "bills-detail",
+                                kwargs={
+                                    "event_pk": sample_event.pk,
+                                    "pk": sample_bill.pk,
+                                },
+                            )
+                        ),
+                        "participants": [],
+                        "title": sample_bill.title,
+                        "amount_currency": "PLN",
+                        "amount": "0.00",
+                        "event": sample_event.id,
+                        "payer": sample_bill.payer,
+                    }
+                ],
+                "payments": [
+                    {
+                        "id": sample_payment.id,
+                        "url": r"http://testserver{}".format(
+                            reverse(
+                                "payments-detail",
+                                kwargs={
+                                    "event_pk": sample_event.pk,
+                                    "pk": sample_payment.pk,
+                                },
+                            )
+                        ),
+                        "issuer": sample_payment.issuer.pk,
+                        "acquirer": sample_payment.acquirer.pk,
+                        "title": sample_payment.title,
+                        "amount_currency": "PLN",
+                        "amount": "0.00",
+                        "event": sample_event.id,
+                    }
+                ],
                 "name": sample_event.name,
                 "paymaster": sample_event.paymaster,
             },
@@ -50,6 +112,9 @@ def test_get_events(sample_event, sample_event_2):
                 "payments_url": "http://testserver{}".format(
                     reverse("payments-list", kwargs={"event_pk": sample_event_2.pk})
                 ),
+                "participants": [],
+                "bills": [],
+                "payments": [],
                 "name": sample_event_2.name,
                 "paymaster": sample_event_2.paymaster,
             },
@@ -58,31 +123,90 @@ def test_get_events(sample_event, sample_event_2):
 
 
 @pytest.mark.django_db
-def test_get_event(sample_event):
+def test_get_event(sample_event, sample_participant, sample_bill, sample_payment):
     """Request should return proper event data"""
 
     client = APIClient()
+    sample_event.participants.add(sample_participant)
+    sample_event.bills.add(sample_bill)
+    sample_event.payments.add(sample_payment)
+    sample_event.save()
     response = client.get(
         reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
     )
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == {
-        "id": sample_event.id,
-        "url": "http://testserver{}".format(
-            reverse("events-detail", kwargs={"pk": sample_event.pk})
-        ),
-        "participants_url": "http://testserver{}".format(
-            reverse("participants-list", kwargs={"event_pk": sample_event.pk})
-        ),
-        "bills_url": "http://testserver{}".format(
-            reverse("bills-list", kwargs={"event_pk": sample_event.pk})
-        ),
-        "payments_url": "http://testserver{}".format(
-            reverse("payments-list", kwargs={"event_pk": sample_event.pk})
-        ),
-        "name": sample_event.name,
-        "paymaster": sample_event.paymaster,
-    }
+    assert json.dumps(response.data) == json.dumps(
+        {
+            "id": sample_event.id,
+            "url": "http://testserver{}".format(
+                reverse("events-detail", kwargs={"pk": sample_event.pk})
+            ),
+            "participants_url": "http://testserver{}".format(
+                reverse("participants-list", kwargs={"event_pk": sample_event.pk})
+            ),
+            "bills_url": "http://testserver{}".format(
+                reverse("bills-list", kwargs={"event_pk": sample_event.pk})
+            ),
+            "payments_url": "http://testserver{}".format(
+                reverse("payments-list", kwargs={"event_pk": sample_event.pk})
+            ),
+            "participants": [
+                {
+                    "id": sample_participant.id,
+                    "url": r"http://testserver{}".format(
+                        reverse(
+                            "participants-detail",
+                            kwargs={
+                                "event_pk": sample_event.pk,
+                                "pk": sample_participant.pk,
+                            },
+                        )
+                    ),
+                    "username": sample_participant.username,
+                    "event": sample_event.id,
+                }
+            ],
+            "bills": [
+                {
+                    "id": sample_bill.id,
+                    "url": r"http://testserver{}".format(
+                        reverse(
+                            "bills-detail",
+                            kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
+                        )
+                    ),
+                    "participants": [],
+                    "title": sample_bill.title,
+                    "amount_currency": "PLN",
+                    "amount": "0.00",
+                    "event": sample_event.id,
+                    "payer": sample_bill.payer,
+                }
+            ],
+            "payments": [
+                {
+                    "id": sample_payment.id,
+                    "url": r"http://testserver{}".format(
+                        reverse(
+                            "payments-detail",
+                            kwargs={
+                                "event_pk": sample_event.pk,
+                                "pk": sample_payment.pk,
+                            },
+                        )
+                    ),
+                    "issuer": sample_payment.issuer.pk,
+                    "acquirer": sample_payment.acquirer.pk,
+                    "title": sample_payment.title,
+                    "amount_currency": "PLN",
+                    "amount": "0.00",
+                    "event": sample_event.id,
+                }
+            ],
+            "name": sample_event.name,
+            "paymaster": sample_event.paymaster,
+        }
+    )
 
 
 @pytest.mark.django_db
