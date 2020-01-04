@@ -1,4 +1,4 @@
-# pylint: disable=too-few-public-methods,missing-class-docstring
+# pylint: disable=too-few-public-methods,missing-class-docstring, no-member
 """
 Serializers for bills application.
 Id fields left to facilitate frontend work.
@@ -8,6 +8,7 @@ from rest_framework.serializers import (
     HyperlinkedIdentityField,
     ModelSerializer,
     HiddenField,
+    PrimaryKeyRelatedField,
 )
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
 from .models import Bill, Event, Participant, Payment
@@ -42,6 +43,12 @@ class EventResourceSerializer(ModelSerializer):
         self.fields["event"].default = self.context["view"].get_event()
 
 
+class ParticipantField(PrimaryKeyRelatedField):
+    def get_queryset(self):
+        event = self.context["view"].get_event()
+        return Participant.objects.filter(event=event)
+
+
 class ParticipantSerializer(EventResourceSerializer):
     """Serializer for Participant object"""
 
@@ -60,6 +67,8 @@ class BillSerializer(EventResourceSerializer):
     url = NestedHyperlinkedIdentityField(
         view_name="bills-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
     )
+    payer = ParticipantField()
+    participants = ParticipantField(many=True)
 
     class Meta:
         model = Bill
@@ -72,6 +81,8 @@ class PaymentSerializer(EventResourceSerializer):
     url = NestedHyperlinkedIdentityField(
         view_name="payments-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
     )
+    issuer = ParticipantField()
+    acquirer = ParticipantField()
 
     class Meta:
         model = Payment
