@@ -6,19 +6,28 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('bills', '0004_auto_20191222_1426'),
-    ]
+    dependencies = [("bills", "0004_auto_20191222_1426")]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='paymaster',
-            field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='paymaster', to='bills.Participant'),
+            model_name="event",
+            name="paymaster",
+            field=models.ForeignKey(
+                blank=True,
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="paymaster",
+                to="bills.Participant",
+            ),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='event',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='payments', to='bills.Event'),
+            model_name="payment",
+            name="event",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="payments",
+                to="bills.Event",
+            ),
         ),
     ]
