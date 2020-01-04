@@ -1,4 +1,4 @@
-# pylint: disable=too-few-public-methods,missing-class-docstring
+# pylint: disable=too-few-public-methods,missing-class-docstring, no-member
 """
 Serializers for bills application.
 Id fields left to facilitate frontend work.

@@ -35,11 +35,11 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
                         kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
                     )
                 ),
+                "payer": sample_bill.payer,
+                "participants": [sample_participant.id],
                 "title": sample_bill.title,
                 "amount_currency": "PLN",
                 "amount": "0.00",
-                "payer": sample_bill.payer,
-                "participants": [sample_participant.id],
             },
             {
                 "id": sample_bill_2.id,
@@ -49,11 +49,11 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
                         kwargs={"event_pk": sample_event.pk, "pk": sample_bill_2.pk},
                     )
                 ),
+                "payer": sample_bill_2.payer,
+                "participants": [],
                 "title": sample_bill_2.title,
                 "amount_currency": "PLN",
                 "amount": "0.00",
-                "payer": sample_bill_2.payer,
-                "participants": [],
             },
         ]
     )
@@ -97,9 +97,15 @@ def test_post_bill(sample_event, sample_participant):
     """New Bill object should be created"""
 
     client = APIClient()
+    sample_event.participants.add(sample_participant)
+    sample_event.save()
 
     assert Bill.objects.filter(title="new bill").count() == 0
-    bill_data = {"title": "new bill", "participants": [sample_participant.id]}
+    bill_data = {
+        "title": "new bill",
+        "participants": [sample_participant.id],
+        "payer": sample_participant.id,
+    }
     response = client.post(
         reverse("bills-list", kwargs={"event_pk": sample_event.pk}),
         bill_data,
