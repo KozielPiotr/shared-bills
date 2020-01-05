@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 
 from .models import Event
+from .serializers import EventSerializer, EventRetrieveSerializer
 
 
 def create_nested_viewset(serializer_obj, model):
@@ -38,22 +39,12 @@ def create_nested_viewset(serializer_obj, model):
     return RelationshipViewset
 
 
-def create_viewset(serializer, model):
-    """
-    Creates detailed viewsets for database objects
-    :param serializer: serializer class
-    :param model: database model
-    :return: new viewset class
-    """
+class EventViewset(viewsets.ModelViewSet):
+    """Viewset for non-nested objects"""
 
-    class Viewset(viewsets.ModelViewSet):
-        """Viewset for non-nested objects"""
+    queryset = Event.objects.all()
 
-        def __init__(self, *args, **kwargs):
-            self.__class__.__name__ = "{}".format(model.__name__)
-            super().__init__(*args, **kwargs)
-
-        serializer_class = serializer
-        queryset = model.objects.all()
-
-    return Viewset
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return EventRetrieveSerializer
+        return EventSerializer

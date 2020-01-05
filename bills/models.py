@@ -27,6 +27,7 @@ class Event(models.Model):
     name = models.CharField(max_length=500, unique=True)
     paymaster = models.ForeignKey(
         Participant,
+        default=None,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -68,7 +69,7 @@ class Payment(models.Model):
     acquirer = models.ForeignKey(
         Participant, on_delete=models.PROTECT, related_name="acquired"
     )
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="payments")
     amount = MoneyField(
         max_digits=7, decimal_places=2, default_currency="PLN", default=0
     )
