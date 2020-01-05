@@ -91,3 +91,19 @@ def sample_payment(sample_participant, sample_participant_2, sample_event):
         yield create(payment)
     if payment in Payment.objects.all():
         delete(payment)
+
+
+@pytest.fixture
+def sample_payment_2(sample_participant, sample_participant_2, sample_event):
+    """Creates new Payment object"""
+
+    payment = Payment(
+        title="sample payment",
+        issuer=sample_participant,
+        acquirer=sample_participant_2,
+        event=sample_event,
+    )
+    if payment not in Payment.objects.all():
+        yield create(payment)
+    if payment in Payment.objects.all():
+        delete(payment)

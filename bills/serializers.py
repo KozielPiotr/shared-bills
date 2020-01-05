@@ -128,6 +128,8 @@ class EventSerializer(ModelSerializer):
 
 
 class EventRetrieveSerializer(EventSerializer):
+    """Serializer for detail view of event."""
+
     participants = ParticipantNestedSerializer(many=True, read_only=True)
     bills = BillNestedSerializer(many=True, read_only=True)
     payments = PaymentNestedSerializer(many=True, read_only=True)

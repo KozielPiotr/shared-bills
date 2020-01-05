@@ -39,62 +39,6 @@ def test_get_events(
                 "payments_url": r"http://testserver{}".format(
                     reverse("payments-list", kwargs={"event_pk": sample_event.pk})
                 ),
-                "participants": [
-                    {
-                        "id": sample_participant.id,
-                        "url": r"http://testserver{}".format(
-                            reverse(
-                                "participants-detail",
-                                kwargs={
-                                    "event_pk": sample_event.pk,
-                                    "pk": sample_participant.pk,
-                                },
-                            )
-                        ),
-                        "username": sample_participant.username,
-                        "event": sample_event.id,
-                    }
-                ],
-                "bills": [
-                    {
-                        "id": sample_bill.id,
-                        "url": r"http://testserver{}".format(
-                            reverse(
-                                "bills-detail",
-                                kwargs={
-                                    "event_pk": sample_event.pk,
-                                    "pk": sample_bill.pk,
-                                },
-                            )
-                        ),
-                        "participants": [],
-                        "title": sample_bill.title,
-                        "amount_currency": "PLN",
-                        "amount": "0.00",
-                        "event": sample_event.id,
-                        "payer": sample_bill.payer,
-                    }
-                ],
-                "payments": [
-                    {
-                        "id": sample_payment.id,
-                        "url": r"http://testserver{}".format(
-                            reverse(
-                                "payments-detail",
-                                kwargs={
-                                    "event_pk": sample_event.pk,
-                                    "pk": sample_payment.pk,
-                                },
-                            )
-                        ),
-                        "issuer": sample_payment.issuer.pk,
-                        "acquirer": sample_payment.acquirer.pk,
-                        "title": sample_payment.title,
-                        "amount_currency": "PLN",
-                        "amount": "0.00",
-                        "event": sample_event.id,
-                    }
-                ],
                 "name": sample_event.name,
                 "paymaster": sample_event.paymaster,
             },
@@ -112,9 +56,6 @@ def test_get_events(
                 "payments_url": "http://testserver{}".format(
                     reverse("payments-list", kwargs={"event_pk": sample_event_2.pk})
                 ),
-                "participants": [],
-                "bills": [],
-                "payments": [],
                 "name": sample_event_2.name,
                 "paymaster": sample_event_2.paymaster,
             },
