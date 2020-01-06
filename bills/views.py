@@ -17,7 +17,7 @@ def create_nested_viewset(serializer_obj, model):
     """
 
     class RelationshipViewset(viewsets.ModelViewSet):
-        """Viewsets for objects related to the Event object"""
+        """Viewsets for objects related to the Event object."""
 
         def __init__(self, *args, **kwargs):
             self.__class__.__name__ = "{}".format(model.__name__)
@@ -26,12 +26,12 @@ def create_nested_viewset(serializer_obj, model):
         serializer_class = serializer_obj
 
         def get_queryset(self):
-            """Query of all Participant objects being related to the given Event"""
+            """Query of all Participant objects being related to the given Event."""
 
             return model.objects.filter(event=self.kwargs["event_pk"])
 
         def get_event(self):
-            """Gets queryset for Event objects with given pk"""
+            """Gets queryset for Event objects with given pk."""
 
             query = Event.objects.filter(pk=self.kwargs["event_pk"])
             return get_object_or_404(query)
@@ -40,7 +40,7 @@ def create_nested_viewset(serializer_obj, model):
 
 
 class EventViewset(viewsets.ModelViewSet):
-    """Viewset for non-nested objects"""
+    """Viewset for non-nested objects."""
 
     queryset = Event.objects.all()
 

@@ -15,7 +15,7 @@ from .models import Bill, Event, Participant, Payment
 
 
 class EventResourceSerializer(ModelSerializer):
-    """Base serializer for event related models"""
+    """Base serializer for event related models."""
 
     event = HiddenField(default=None)
 
@@ -31,7 +31,7 @@ class ParticipantField(PrimaryKeyRelatedField):
 
 
 class ParticipantSerializer(EventResourceSerializer):
-    """Serializer for Participant object"""
+    """Serializer for Participant object."""
 
     url = NestedHyperlinkedIdentityField(
         view_name="participants-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
@@ -43,7 +43,7 @@ class ParticipantSerializer(EventResourceSerializer):
 
 
 class ParticipantNestedSerializer(ModelSerializer):
-    """Serializer for fully nested Participant object"""
+    """Serializer for fully nested Participant object."""
 
     url = NestedHyperlinkedIdentityField(
         view_name="participants-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
@@ -55,7 +55,7 @@ class ParticipantNestedSerializer(ModelSerializer):
 
 
 class BillSerializer(EventResourceSerializer):
-    """Serializer for Bill object"""
+    """Serializer for Bill object."""
 
     url = NestedHyperlinkedIdentityField(
         view_name="bills-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
@@ -68,7 +68,7 @@ class BillSerializer(EventResourceSerializer):
 
 
 class BillNestedSerializer(ModelSerializer):
-    """Serializer for fully nested Bill object"""
+    """Serializer for fully nested Bill object."""
 
     url = NestedHyperlinkedIdentityField(
         view_name="bills-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
@@ -81,7 +81,7 @@ class BillNestedSerializer(ModelSerializer):
 
 
 class PaymentSerializer(EventResourceSerializer):
-    """Serializer for Payment object"""
+    """Serializer for Payment object."""
 
     url = NestedHyperlinkedIdentityField(
         view_name="payments-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
@@ -95,7 +95,7 @@ class PaymentSerializer(EventResourceSerializer):
 
 
 class PaymentNestedSerializer(ModelSerializer):
-    """Serializer for fully nested Payment object"""
+    """Serializer for fully nested Payment object."""
 
     url = NestedHyperlinkedIdentityField(
         view_name="payments-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
@@ -109,7 +109,7 @@ class PaymentNestedSerializer(ModelSerializer):
 
 
 class EventSerializer(ModelSerializer):
-    """Serializer for Event object"""
+    """Serializer for Event object."""
 
     url = HyperlinkedIdentityField(view_name="events-detail")
     participants_url = HyperlinkedIdentityField(

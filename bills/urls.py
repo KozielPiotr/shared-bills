@@ -1,5 +1,5 @@
 # pylint: disable=invalid-name
-"""Urls for bills application"""
+"""Urls for bills application."""
 
 from django.urls import include, path
 from rest_framework_nested import routers

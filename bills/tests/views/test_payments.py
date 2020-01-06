@@ -1,5 +1,5 @@
 # pylint: disable=no-member, bad-continuation
-"""Tests for bills payments views"""
+"""Tests for bills payments views."""
 
 import json
 import pytest
@@ -18,7 +18,7 @@ def test_get_payments(
     sample_participant,
     sample_participant_2,
 ):
-    """Request should return all Payment objects data related to sample_event"""
+    """Request should return all Payment objects data related to sample_event."""
 
     client = APIClient()
     sample_payment.issuer = sample_participant
@@ -68,7 +68,7 @@ def test_get_payments(
 
 @pytest.mark.django_db
 def test_get_payment(sample_event, sample_payment, sample_participant):
-    """Request should return all Payment objects data related to sample_event"""
+    """Request should return all Payment objects data related to sample_event."""
 
     client = APIClient()
     sample_payment.issuer = sample_participant
@@ -104,7 +104,7 @@ def test_get_payment(sample_event, sample_payment, sample_participant):
 
 @pytest.mark.django_db
 def test_post_payment(sample_event, sample_participant, sample_participant_2):
-    """New Payment object should be created"""
+    """New Payment object should be created."""
 
     client = APIClient()
     sample_event.participants.add(sample_participant, sample_participant_2)
@@ -128,7 +128,7 @@ def test_post_payment(sample_event, sample_participant, sample_participant_2):
 
 @pytest.mark.django_db
 def test_delete_payment(sample_event, sample_payment):
-    """Payment object should be deleted"""
+    """Payment object should be deleted."""
 
     client = APIClient()
     sample_event.payments.add(sample_payment)
@@ -149,7 +149,7 @@ def test_delete_payment(sample_event, sample_payment):
 
 @pytest.mark.django_db
 def test_patch_payment(sample_event, sample_payment):
-    """sample_payment should have a changed title"""
+    """sample_payment should have a changed title."""
 
     client = APIClient()
     sample_event.payments.add(sample_payment)
