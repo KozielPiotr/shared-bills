@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 """shared_bills URL Configuration"""
 
 from django.contrib import admin
