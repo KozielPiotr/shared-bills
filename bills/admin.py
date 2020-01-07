@@ -7,7 +7,7 @@ from .models import Event, Participant, Payment, Bill
 
 
 class ParticipantAdmin(admin.ModelAdmin):
-    """Admin view for Custom User."""
+    """Admin view for Participant."""
 
     model = Participant
     list_display = ["username", "event"]

@@ -29,7 +29,8 @@ def test_get_payments(
     sample_event.save()
 
     response = client.get(
-        reverse("payments-list", kwargs={"event_pk": sample_event.pk}), format="json"
+        reverse("bills:payments-list", kwargs={"event_pk": sample_event.pk}),
+        format="json",
     )
     assert response.status_code == status.HTTP_200_OK
     assert json.dumps(response.data) == json.dumps(
@@ -38,7 +39,7 @@ def test_get_payments(
                 "id": sample_payment.id,
                 "url": r"http://testserver{}".format(
                     reverse(
-                        "payments-detail",
+                        "bills:payments-detail",
                         kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
                     )
                 ),
@@ -52,7 +53,7 @@ def test_get_payments(
                 "id": sample_payment_2.id,
                 "url": r"http://testserver{}".format(
                     reverse(
-                        "payments-detail",
+                        "bills:payments-detail",
                         kwargs={"event_pk": sample_event.pk, "pk": sample_payment_2.pk},
                     )
                 ),
@@ -78,7 +79,7 @@ def test_get_payment(sample_event, sample_payment, sample_participant):
 
     response = client.get(
         reverse(
-            "payments-detail",
+            "bills:payments-detail",
             kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
         ),
         format="json",
@@ -89,7 +90,7 @@ def test_get_payment(sample_event, sample_payment, sample_participant):
             "id": sample_payment.id,
             "url": r"http://testserver{}".format(
                 reverse(
-                    "payments-detail",
+                    "bills:payments-detail",
                     kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
                 )
             ),
@@ -117,7 +118,7 @@ def test_post_payment(sample_event, sample_participant, sample_participant_2):
         "acquirer": sample_participant_2.id,
     }
     response = client.post(
-        reverse("payments-list", kwargs={"event_pk": sample_event.pk}),
+        reverse("bills:payments-list", kwargs={"event_pk": sample_event.pk}),
         bill_data,
         format="json",
     )
@@ -137,7 +138,7 @@ def test_delete_payment(sample_event, sample_payment):
     assert sample_payment in Payment.objects.filter(title=sample_payment.title)
     response = client.delete(
         reverse(
-            "payments-detail",
+            "bills:payments-detail",
             kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
         ),
         format="json",
@@ -160,7 +161,7 @@ def test_patch_payment(sample_event, sample_payment):
     assert Payment.objects.filter(title=changed_payment_data["title"]).count() == 0
     response = client.patch(
         reverse(
-            "payments-detail",
+            "bills:payments-detail",
             kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
         ),
         changed_payment_data,

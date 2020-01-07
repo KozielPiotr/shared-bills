@@ -14,47 +14,54 @@ from bills.models import Event
 def test_get_events(
     sample_event, sample_event_2, sample_participant, sample_bill, sample_payment
 ):
-    """Request should return all Event objects data"""
+    """Request should return all Event objects data."""
 
     client = APIClient()
     sample_event.participants.add(sample_participant)
     sample_event.bills.add(sample_bill)
     sample_event.payments.add(sample_payment)
     sample_event.save()
-    response = client.get(reverse("events-list"), format="json")
+    response = client.get(reverse("bills:events-list"), format="json")
     assert response.status_code == status.HTTP_200_OK
     assert json.dumps(response.data) == json.dumps(
         [
             {
-                "id": sample_event.id,
+                "id": sample_event.pk,
                 "url": r"http://testserver{}".format(
-                    reverse("events-detail", kwargs={"pk": sample_event.pk})
+                    reverse("bills:events-detail", kwargs={"pk": sample_event.pk})
                 ),
                 "participants_url": r"http://testserver{}".format(
-                    reverse("participants-list", kwargs={"event_pk": sample_event.pk})
+                    reverse(
+                        "bills:participants-list", kwargs={"event_pk": sample_event.pk}
+                    )
                 ),
                 "bills_url": r"http://testserver{}".format(
-                    reverse("bills-list", kwargs={"event_pk": sample_event.pk})
+                    reverse("bills:bills-list", kwargs={"event_pk": sample_event.pk})
                 ),
                 "payments_url": r"http://testserver{}".format(
-                    reverse("payments-list", kwargs={"event_pk": sample_event.pk})
+                    reverse("bills:payments-list", kwargs={"event_pk": sample_event.pk})
                 ),
                 "name": sample_event.name,
                 "paymaster": sample_event.paymaster,
             },
             {
-                "id": sample_event_2.id,
+                "id": sample_event_2.pk,
                 "url": "http://testserver{}".format(
-                    reverse("events-detail", kwargs={"pk": sample_event_2.pk})
+                    reverse("bills:events-detail", kwargs={"pk": sample_event_2.pk})
                 ),
                 "participants_url": "http://testserver{}".format(
-                    reverse("participants-list", kwargs={"event_pk": sample_event_2.pk})
+                    reverse(
+                        "bills:participants-list",
+                        kwargs={"event_pk": sample_event_2.pk},
+                    )
                 ),
                 "bills_url": "http://testserver{}".format(
-                    reverse("bills-list", kwargs={"event_pk": sample_event_2.pk})
+                    reverse("bills:bills-list", kwargs={"event_pk": sample_event_2.pk})
                 ),
                 "payments_url": "http://testserver{}".format(
-                    reverse("payments-list", kwargs={"event_pk": sample_event_2.pk})
+                    reverse(
+                        "bills:payments-list", kwargs={"event_pk": sample_event_2.pk}
+                    )
                 ),
                 "name": sample_event_2.name,
                 "paymaster": sample_event_2.paymaster,
@@ -64,8 +71,10 @@ def test_get_events(
 
 
 @pytest.mark.django_db
-def test_get_event(sample_event, sample_participant, sample_bill, sample_payment):
-    """Request should return proper event data"""
+def test_get_event(
+    sample_event, sample_participant, sample_bill, sample_payment, sample_user
+):
+    """Request should return proper event data."""
 
     client = APIClient()
     sample_event.participants.add(sample_participant)
@@ -73,30 +82,30 @@ def test_get_event(sample_event, sample_participant, sample_bill, sample_payment
     sample_event.payments.add(sample_payment)
     sample_event.save()
     response = client.get(
-        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+        reverse("bills:events-detail", kwargs={"pk": sample_event.pk}), format="json"
     )
     assert response.status_code == status.HTTP_200_OK
     assert json.dumps(response.data) == json.dumps(
         {
-            "id": sample_event.id,
+            "id": sample_event.pk,
             "url": "http://testserver{}".format(
-                reverse("events-detail", kwargs={"pk": sample_event.pk})
+                reverse("bills:events-detail", kwargs={"pk": sample_event.pk})
             ),
             "participants_url": "http://testserver{}".format(
-                reverse("participants-list", kwargs={"event_pk": sample_event.pk})
+                reverse("bills:participants-list", kwargs={"event_pk": sample_event.pk})
             ),
             "bills_url": "http://testserver{}".format(
-                reverse("bills-list", kwargs={"event_pk": sample_event.pk})
+                reverse("bills:bills-list", kwargs={"event_pk": sample_event.pk})
             ),
             "payments_url": "http://testserver{}".format(
-                reverse("payments-list", kwargs={"event_pk": sample_event.pk})
+                reverse("bills:payments-list", kwargs={"event_pk": sample_event.pk})
             ),
             "participants": [
                 {
-                    "id": sample_participant.id,
+                    "id": sample_participant.pk,
                     "url": r"http://testserver{}".format(
                         reverse(
-                            "participants-detail",
+                            "bills:participants-detail",
                             kwargs={
                                 "event_pk": sample_event.pk,
                                 "pk": sample_participant.pk,
@@ -104,15 +113,16 @@ def test_get_event(sample_event, sample_participant, sample_bill, sample_payment
                         )
                     ),
                     "username": sample_participant.username,
-                    "event": sample_event.id,
+                    "event": sample_event.pk,
+                    "user": sample_user.pk,
                 }
             ],
             "bills": [
                 {
-                    "id": sample_bill.id,
+                    "id": sample_bill.pk,
                     "url": r"http://testserver{}".format(
                         reverse(
-                            "bills-detail",
+                            "bills:bills-detail",
                             kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
                         )
                     ),
@@ -120,16 +130,16 @@ def test_get_event(sample_event, sample_participant, sample_bill, sample_payment
                     "title": sample_bill.title,
                     "amount_currency": "PLN",
                     "amount": "0.00",
-                    "event": sample_event.id,
+                    "event": sample_event.pk,
                     "payer": sample_bill.payer,
                 }
             ],
             "payments": [
                 {
-                    "id": sample_payment.id,
+                    "id": sample_payment.pk,
                     "url": r"http://testserver{}".format(
                         reverse(
-                            "payments-detail",
+                            "bills:payments-detail",
                             kwargs={
                                 "event_pk": sample_event.pk,
                                 "pk": sample_payment.pk,
@@ -141,7 +151,7 @@ def test_get_event(sample_event, sample_participant, sample_bill, sample_payment
                     "title": sample_payment.title,
                     "amount_currency": "PLN",
                     "amount": "0.00",
-                    "event": sample_event.id,
+                    "event": sample_event.pk,
                 }
             ],
             "name": sample_event.name,
@@ -152,12 +162,12 @@ def test_get_event(sample_event, sample_participant, sample_bill, sample_payment
 
 @pytest.mark.django_db
 def test_post_event():
-    """New Event object should be created"""
+    """New Event object should be created."""
 
     assert Event.objects.filter(name="new test event").count() == 0
     client = APIClient()
     event_data = {"name": "new test event"}
-    response = client.post(reverse("events-list"), event_data, format="json")
+    response = client.post(reverse("bills:events-list"), event_data, format="json")
     assert response.status_code == status.HTTP_201_CREATED
     assert Event.objects.filter(name="new test event").count() == 1
 
@@ -169,7 +179,7 @@ def test_delete_event(sample_event):
     assert sample_event in Event.objects.filter(name=sample_event.name)
     client = APIClient()
     response = client.delete(
-        reverse("events-detail", kwargs={"pk": sample_event.pk}),
+        reverse("bills:events-detail", kwargs={"pk": sample_event.pk}),
         format="json",
         follow=True,
     )
@@ -179,14 +189,14 @@ def test_delete_event(sample_event):
 
 @pytest.mark.django_db
 def test_put_event(sample_event):
-    """sample_event should have a changed name"""
+    """sample_event should have a changed name."""
 
     changed_event_data = {"name": "new test event"}
     assert sample_event in Event.objects.filter(name=sample_event.name)
     assert Event.objects.filter(name=changed_event_data["name"]).count() == 0
     client = APIClient()
     response = client.put(
-        reverse("events-detail", kwargs={"pk": sample_event.pk}),
+        reverse("bills:events-detail", kwargs={"pk": sample_event.pk}),
         changed_event_data,
         format="json",
     )

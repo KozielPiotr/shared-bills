@@ -4,6 +4,8 @@
 from djmoney.models.fields import MoneyField
 from django.db import models
 
+from accounts.models import User
+
 
 class Participant(models.Model):
     """Model for event's participants."""
@@ -13,6 +15,13 @@ class Participant(models.Model):
         "Event",
         null=True,
         blank=True,
+        on_delete=models.CASCADE,
+        related_name="participants",
+    )
+    user = models.ForeignKey(
+        User,
+        null=False,
+        blank=False,
         on_delete=models.CASCADE,
         related_name="participants",
     )

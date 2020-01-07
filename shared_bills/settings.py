@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "djmoney",
     "bills",
+    "accounts",
 ]
 
 MIDDLEWARE = [
@@ -84,6 +85,11 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+
+
+# Authentication
+
+AUTH_USER_MODEL = "accounts.User"
 
 
 # Password validation

@@ -9,7 +9,7 @@ from bills.models import Bill, Event, Participant
 
 @pytest.mark.django_db
 def test_bill_create(sample_bill):
-    """sample_event should be an instance of Event class"""
+    """sample_bill should be an instance of Bill class"""
 
     assert isinstance(sample_bill, Bill)
 

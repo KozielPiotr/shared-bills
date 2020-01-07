@@ -1,4 +1,4 @@
-# pylint: disable=no-member
+# pylint: disable=no-member, bad-continuation
 """Tests for bills participants views"""
 
 import json
@@ -11,7 +11,9 @@ from bills.models import Participant
 
 
 @pytest.mark.django_db
-def test_get_participants(sample_event, sample_participant, sample_participant_2):
+def test_get_participants(
+    sample_event, sample_participant, sample_participant_2, sample_user
+):
     """Request should return all Participant objects data related to sample_event"""
 
     client = APIClient()
@@ -20,7 +22,7 @@ def test_get_participants(sample_event, sample_participant, sample_participant_2
     sample_event.save()
 
     response = client.get(
-        reverse("participants-list", kwargs={"event_pk": sample_event.pk}),
+        reverse("bills:participants-list", kwargs={"event_pk": sample_event.pk}),
         format="json",
     )
     assert response.status_code == status.HTTP_200_OK
@@ -30,7 +32,7 @@ def test_get_participants(sample_event, sample_participant, sample_participant_2
                 "id": sample_participant.id,
                 "url": r"http://testserver{}".format(
                     reverse(
-                        "participants-detail",
+                        "bills:participants-detail",
                         kwargs={
                             "event_pk": sample_event.pk,
                             "pk": sample_participant.pk,
@@ -38,12 +40,13 @@ def test_get_participants(sample_event, sample_participant, sample_participant_2
                     )
                 ),
                 "username": sample_participant.username,
+                "user": sample_user.id,
             },
             {
                 "id": sample_participant_2.id,
                 "url": r"http://testserver{}".format(
                     reverse(
-                        "participants-detail",
+                        "bills:participants-detail",
                         kwargs={
                             "event_pk": sample_event.pk,
                             "pk": sample_participant_2.pk,
@@ -51,13 +54,14 @@ def test_get_participants(sample_event, sample_participant, sample_participant_2
                     )
                 ),
                 "username": sample_participant_2.username,
+                "user": sample_user.id,
             },
         ]
     )
 
 
 @pytest.mark.django_db
-def test_get_participant(sample_event, sample_participant):
+def test_get_participant(sample_event, sample_participant, sample_user):
     """Request should return proper participant data"""
 
     client = APIClient()
@@ -66,7 +70,7 @@ def test_get_participant(sample_event, sample_participant):
 
     response = client.get(
         reverse(
-            "participants-detail",
+            "bills:participants-detail",
             kwargs={"event_pk": sample_event.pk, "pk": sample_participant.pk},
         ),
         format="jason",
@@ -76,29 +80,40 @@ def test_get_participant(sample_event, sample_participant):
         "id": sample_participant.id,
         "url": r"http://testserver{}".format(
             reverse(
-                "participants-detail",
+                "bills:participants-detail",
                 kwargs={"event_pk": sample_event.pk, "pk": sample_participant.pk},
             )
         ),
         "username": sample_participant.username,
+        "user": sample_user.id,
     }
 
 
 @pytest.mark.django_db
-def test_post_participant(sample_event):
+def test_post_participant(sample_event, sample_user):
     """New Participant object should be created"""
 
     client = APIClient()
 
-    assert Participant.objects.filter(username="new participant").count() == 0
-    participant_data = {"username": "new participant"}
+    assert (
+        Participant.objects.filter(
+            username="new participant", user=sample_user.id
+        ).count()
+        == 0
+    )
+    participant_data = {"username": "new participant", "user": sample_user.id}
     response = client.post(
-        reverse("participants-list", kwargs={"event_pk": sample_event.pk}),
+        reverse("bills:participants-list", kwargs={"event_pk": sample_event.pk}),
         participant_data,
         format="json",
     )
     assert response.status_code == status.HTTP_201_CREATED
-    assert Participant.objects.filter(username="new participant").count() == 1
+    assert (
+        Participant.objects.filter(
+            username="new participant", user=sample_user.id
+        ).count()
+        == 1
+    )
 
 
 @pytest.mark.django_db
@@ -114,7 +129,7 @@ def test_delete_participant(sample_event, sample_participant):
     )
     response = client.delete(
         reverse(
-            "participants-detail",
+            "bills:participants-detail",
             kwargs={"event_pk": sample_event.pk, "pk": sample_participant.pk},
         ),
         format="json",
@@ -127,10 +142,12 @@ def test_delete_participant(sample_event, sample_participant):
 
 
 @pytest.mark.django_db
-def test_patch_participant(sample_event, sample_participant):
+def test_patch_participant(sample_event, sample_participant, sample_user):
     """sample_participant should have a changed username"""
 
     client = APIClient()
+    sample_participant.user = sample_user
+    sample_participant.save()
     sample_event.participants.add(sample_participant)
     sample_event.save()
 
@@ -146,7 +163,7 @@ def test_patch_participant(sample_event, sample_participant):
     )
     response = client.patch(
         reverse(
-            "participants-detail",
+            "bills:participants-detail",
             kwargs={"event_pk": sample_event.pk, "pk": sample_participant.pk},
         ),
         changed_participant_data,

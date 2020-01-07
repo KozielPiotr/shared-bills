@@ -22,7 +22,7 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
     sample_event.save()
 
     response = client.get(
-        reverse("bills-list", kwargs={"event_pk": sample_event.pk}), format="json"
+        reverse("bills:bills-list", kwargs={"event_pk": sample_event.pk}), format="json"
     )
     assert response.status_code == status.HTTP_200_OK
     assert json.dumps(response.data) == json.dumps(
@@ -31,7 +31,7 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
                 "id": sample_bill.id,
                 "url": r"http://testserver{}".format(
                     reverse(
-                        "bills-detail",
+                        "bills:bills-detail",
                         kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
                     )
                 ),
@@ -45,7 +45,7 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
                 "id": sample_bill_2.id,
                 "url": r"http://testserver{}".format(
                     reverse(
-                        "bills-detail",
+                        "bills:bills-detail",
                         kwargs={"event_pk": sample_event.pk, "pk": sample_bill_2.pk},
                     )
                 ),
@@ -71,7 +71,8 @@ def test_get_bill(sample_event, sample_bill, sample_participant):
 
     response = client.get(
         reverse(
-            "bills-detail", kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk}
+            "bills:bills-detail",
+            kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
         ),
         format="jason",
     )
@@ -80,7 +81,7 @@ def test_get_bill(sample_event, sample_bill, sample_participant):
         "id": sample_bill.id,
         "url": r"http://testserver{}".format(
             reverse(
-                "bills-detail",
+                "bills:bills-detail",
                 kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
             )
         ),
@@ -103,7 +104,7 @@ def test_post_bill(sample_event, sample_participant):
     assert Bill.objects.filter(title="new bill").count() == 0
     bill_data = {"title": "new bill", "participants": [sample_participant.id]}
     response = client.post(
-        reverse("bills-list", kwargs={"event_pk": sample_event.pk}),
+        reverse("bills:bills-list", kwargs={"event_pk": sample_event.pk}),
         bill_data,
         format="json",
     )
@@ -125,7 +126,8 @@ def test_delete_bill(sample_event, sample_bill):
     assert sample_bill in Bill.objects.filter(title=sample_bill.title)
     response = client.delete(
         reverse(
-            "bills-detail", kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk}
+            "bills:bills-detail",
+            kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
         ),
         format="json",
         follow=True,
@@ -147,7 +149,8 @@ def test_patch_bill(sample_event, sample_bill):
     assert Bill.objects.filter(title=changed_bill_data["title"]).count() == 0
     response = client.patch(
         reverse(
-            "bills-detail", kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk}
+            "bills:bills-detail",
+            kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
         ),
         changed_bill_data,
         format="json",
