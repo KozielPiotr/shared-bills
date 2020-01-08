@@ -5,7 +5,7 @@ import pytest
 
 from accounts.models import User
 from accounts.tests.utils import create, delete
-from bills.models import Participant
+from bills.models import Event
 
 
 @pytest.fixture
@@ -23,26 +23,22 @@ def sample_user_2():
 
 
 @pytest.fixture
-def sample_participant(sample_user):
-    """Creates new Participant object"""
+def sample_event():
+    """Creates new Event object"""
 
-    participant = Participant(username="Sample participant", user=sample_user)
-    if participant not in Participant.objects.all():
-        yield create(participant)
-    if participant in Participant.objects.all():
-        for bill in participant.payer.all():
-            bill.delete()
-        delete(participant)
+    event = Event(name="Sample event", user=sample_user)
+    if event not in Event.objects.all():
+        yield create(event)
+    if event in Event.objects.filter():
+        delete(event)
 
 
 @pytest.fixture
-def sample_participant_2(sample_user):
-    """Creates new Participant object"""
+def sample_event_2():
+    """Creates new Event object"""
 
-    participant = Participant(username="Sample participant 2", user=sample_user)
-    if participant not in Participant.objects.all():
-        yield create(participant)
-    if participant in Participant.objects.all():
-        for bill in participant.payer.all():
-            bill.delete()
-        delete(participant)
+    event = Event(name="Sample event 2", user=sample_user)
+    if event not in Event.objects.all():
+        yield create(event)
+    if event in Event.objects.filter():
+        delete(event)

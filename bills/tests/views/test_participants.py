@@ -11,9 +11,7 @@ from bills.models import Participant
 
 
 @pytest.mark.django_db
-def test_get_participants(
-    sample_event, sample_participant, sample_participant_2, sample_user
-):
+def test_get_participants(sample_event, sample_participant, sample_participant_2):
     """Request should return all Participant objects data related to sample_event"""
 
     client = APIClient()
@@ -40,7 +38,6 @@ def test_get_participants(
                     )
                 ),
                 "username": sample_participant.username,
-                "user": sample_user.id,
             },
             {
                 "id": sample_participant_2.id,
@@ -54,14 +51,13 @@ def test_get_participants(
                     )
                 ),
                 "username": sample_participant_2.username,
-                "user": sample_user.id,
             },
         ]
     )
 
 
 @pytest.mark.django_db
-def test_get_participant(sample_event, sample_participant, sample_user):
+def test_get_participant(sample_event, sample_participant):
     """Request should return proper participant data"""
 
     client = APIClient()
@@ -85,35 +81,24 @@ def test_get_participant(sample_event, sample_participant, sample_user):
             )
         ),
         "username": sample_participant.username,
-        "user": sample_user.id,
     }
 
 
 @pytest.mark.django_db
-def test_post_participant(sample_event, sample_user):
+def test_post_participant(sample_event):
     """New Participant object should be created"""
 
     client = APIClient()
 
-    assert (
-        Participant.objects.filter(
-            username="new participant", user=sample_user.id
-        ).count()
-        == 0
-    )
-    participant_data = {"username": "new participant", "user": sample_user.id}
+    assert Participant.objects.filter(username="new participant").count() == 0
+    participant_data = {"username": "new participant"}
     response = client.post(
         reverse("bills:participants-list", kwargs={"event_pk": sample_event.pk}),
         participant_data,
         format="json",
     )
     assert response.status_code == status.HTTP_201_CREATED
-    assert (
-        Participant.objects.filter(
-            username="new participant", user=sample_user.id
-        ).count()
-        == 1
-    )
+    assert Participant.objects.filter(username="new participant").count() == 1
 
 
 @pytest.mark.django_db
@@ -142,12 +127,10 @@ def test_delete_participant(sample_event, sample_participant):
 
 
 @pytest.mark.django_db
-def test_patch_participant(sample_event, sample_participant, sample_user):
+def test_patch_participant(sample_event, sample_participant):
     """sample_participant should have a changed username"""
 
     client = APIClient()
-    sample_participant.user = sample_user
-    sample_participant.save()
     sample_event.participants.add(sample_participant)
     sample_event.save()
 

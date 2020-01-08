@@ -19,7 +19,7 @@ def sample_user():
 def sample_participant(sample_user):
     """Creates new Participant object"""
 
-    participant = Participant(username="Sample participant", user=sample_user)
+    participant = Participant(username="Sample participant")
     if participant not in Participant.objects.all():
         yield create(participant)
     if participant in Participant.objects.all():
@@ -32,7 +32,7 @@ def sample_participant(sample_user):
 def sample_participant_2(sample_user):
     """Creates new Participant object"""
 
-    participant = Participant(username="Sample participant 2", user=sample_user)
+    participant = Participant(username="Sample participant 2")
     if participant not in Participant.objects.all():
         yield create(participant)
     if participant in Participant.objects.all():
@@ -42,10 +42,10 @@ def sample_participant_2(sample_user):
 
 
 @pytest.fixture
-def sample_event():
+def sample_event(sample_user):
     """Creates new Event object"""
 
-    event = Event(name="Sample event")
+    event = Event(name="Sample event", user=sample_user)
     if event not in Event.objects.all():
         yield create(event)
     if event in Event.objects.filter():
@@ -53,10 +53,10 @@ def sample_event():
 
 
 @pytest.fixture
-def sample_event_2():
+def sample_event_2(sample_user):
     """Creates new Event object"""
 
-    event = Event(name="Sample event 2")
+    event = Event(name="Sample event 2", user=sample_user)
     if event not in Event.objects.all():
         yield create(event)
     if event in Event.objects.filter():

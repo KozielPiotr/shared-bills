@@ -14,9 +14,10 @@ from rest_framework.validators import UniqueValidator
 from accounts.models import User
 
 
-class RegisterUserSerializer(ModelSerializer):
-    """Serializer for User class."""
+class UserSerializer(ModelSerializer):
+    """Serializer for User object."""
 
+    url = HyperlinkedIdentityField(view_name="accounts:users-detail")
     email = EmailField(
         required=True, validators=[UniqueValidator(queryset=User.objects.all())]
     )
@@ -32,21 +33,4 @@ class RegisterUserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "email", "password")
-
-
-class UserSerializer(ModelSerializer):
-    """Serializer for User object."""
-
-    url = HyperlinkedIdentityField(view_name="accounts:users-detail")
-    # participants_url = HyperlinkedIdentityField(
-    #     view_name="bills:participants-list", lookup_url_kwarg="pk"
-    # )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["email"].read_only = True
-
-    class Meta:
-        model = User
-        fields = ["id", "url", "email"]
+        fields = ["id", "url", "email", "password"]

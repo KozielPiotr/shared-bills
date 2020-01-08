@@ -4,8 +4,10 @@
 import json
 import pytest
 from django.urls import reverse
-from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.test import APIClient
+
+from accounts.models import User
 
 
 @pytest.mark.django_db
@@ -155,3 +157,15 @@ def test_fail_delete_detail_user(sample_user):
         reverse("accounts:users-detail", kwargs={"pk": sample_user.pk}), format="json"
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+
+
+# @pytest.mark.django_db
+# def test_register_user():
+#     """New User object should be created."""
+#
+#     client = APIClient()
+#     assert User.objects.all().count() == 0
+#
+#     user_data = {"email": "test@test.com", "password": "testpassword"}
+#     response = client.post("accounts:users-register", user_data, format="json")
+#     assert response.status_code == status.HTTP_201_CREATED

@@ -12,7 +12,12 @@ from bills.models import Event
 
 @pytest.mark.django_db
 def test_get_events(
-    sample_event, sample_event_2, sample_participant, sample_bill, sample_payment
+    sample_event,
+    sample_event_2,
+    sample_participant,
+    sample_bill,
+    sample_payment,
+    sample_user,
 ):
     """Request should return all Event objects data."""
 
@@ -43,6 +48,7 @@ def test_get_events(
                 ),
                 "name": sample_event.name,
                 "paymaster": sample_event.paymaster,
+                "user": sample_user.pk,
             },
             {
                 "id": sample_event_2.pk,
@@ -65,6 +71,7 @@ def test_get_events(
                 ),
                 "name": sample_event_2.name,
                 "paymaster": sample_event_2.paymaster,
+                "user": sample_user.pk,
             },
         ]
     )
@@ -114,7 +121,6 @@ def test_get_event(
                     ),
                     "username": sample_participant.username,
                     "event": sample_event.pk,
-                    "user": sample_user.pk,
                 }
             ],
             "bills": [
@@ -156,17 +162,18 @@ def test_get_event(
             ],
             "name": sample_event.name,
             "paymaster": sample_event.paymaster,
+            "user": sample_user.pk,
         }
     )
 
 
 @pytest.mark.django_db
-def test_post_event():
+def test_post_event(sample_user):
     """New Event object should be created."""
 
     assert Event.objects.filter(name="new test event").count() == 0
     client = APIClient()
-    event_data = {"name": "new test event"}
+    event_data = {"name": "new test event", "user": sample_user.id}
     response = client.post(reverse("bills:events-list"), event_data, format="json")
     assert response.status_code == status.HTTP_201_CREATED
     assert Event.objects.filter(name="new test event").count() == 1
@@ -188,10 +195,10 @@ def test_delete_event(sample_event):
 
 
 @pytest.mark.django_db
-def test_put_event(sample_event):
+def test_put_event(sample_event, sample_user):
     """sample_event should have a changed name."""
 
-    changed_event_data = {"name": "new test event"}
+    changed_event_data = {"name": "new test event", "user": sample_user.id}
     assert sample_event in Event.objects.filter(name=sample_event.name)
     assert Event.objects.filter(name=changed_event_data["name"]).count() == 0
     client = APIClient()

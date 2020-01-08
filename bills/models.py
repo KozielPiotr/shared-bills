@@ -18,13 +18,6 @@ class Participant(models.Model):
         on_delete=models.CASCADE,
         related_name="participants",
     )
-    user = models.ForeignKey(
-        User,
-        null=False,
-        blank=False,
-        on_delete=models.CASCADE,
-        related_name="participants",
-    )
 
     def __str__(self):
         return self.username
@@ -41,6 +34,14 @@ class Event(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="paymaster",
+    )
+    user = models.ForeignKey(
+        User,
+        default=None,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="events",
     )
 
     def __str__(self):
