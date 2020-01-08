@@ -16,7 +16,7 @@ def sample_user():
 
 
 @pytest.fixture
-def sample_participant(sample_user):
+def sample_participant():
     """Creates new Participant object"""
 
     participant = Participant(username="Sample participant")
@@ -29,7 +29,7 @@ def sample_participant(sample_user):
 
 
 @pytest.fixture
-def sample_participant_2(sample_user):
+def sample_participant_2():
     """Creates new Participant object"""
 
     participant = Participant(username="Sample participant 2")

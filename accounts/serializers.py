@@ -3,12 +3,7 @@
 Serializers for accounts application.
 """
 
-from rest_framework.serializers import (
-    CharField,
-    EmailField,
-    ModelSerializer,
-    HyperlinkedIdentityField,
-)
+from rest_framework.serializers import CharField, EmailField, ModelSerializer
 from rest_framework.validators import UniqueValidator
 
 from accounts.models import User

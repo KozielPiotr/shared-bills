@@ -1,4 +1,4 @@
-# pylint: disable=no-member
+# pylint: disable=no-member, bad-continuation
 """Tests for bills bills views."""
 
 import json
@@ -11,10 +11,13 @@ from bills.models import Bill
 
 
 @pytest.mark.django_db
-def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant):
+def test_get_bills(
+    sample_event, sample_bill, sample_bill_2, sample_participant, sample_user
+):
     """Request should return all Bill objects data related to sample_event."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_bill.participants.add(sample_participant)
     sample_bill.save()
     sample_event.bills.add(sample_bill)
@@ -22,7 +25,7 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
     sample_event.save()
 
     response = client.get(
-        reverse("bills:bills-list", kwargs={"event_pk": sample_event.pk}), format="json"
+        reverse("bills-list", kwargs={"event_pk": sample_event.pk}), format="json"
     )
     assert response.status_code == status.HTTP_200_OK
     assert json.dumps(response.data) == json.dumps(
@@ -31,7 +34,7 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
                 "id": sample_bill.id,
                 "url": r"http://testserver{}".format(
                     reverse(
-                        "bills:bills-detail",
+                        "bills-detail",
                         kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
                     )
                 ),
@@ -45,7 +48,7 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
                 "id": sample_bill_2.id,
                 "url": r"http://testserver{}".format(
                     reverse(
-                        "bills:bills-detail",
+                        "bills-detail",
                         kwargs={"event_pk": sample_event.pk, "pk": sample_bill_2.pk},
                     )
                 ),
@@ -60,10 +63,11 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
 
 
 @pytest.mark.django_db
-def test_get_bill(sample_event, sample_bill, sample_participant):
+def test_get_bill(sample_event, sample_bill, sample_participant, sample_user):
     """Request should return proper bill data."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_bill.participants.add(sample_participant)
     sample_bill.save()
     sample_event.bills.add(sample_bill)
@@ -71,8 +75,7 @@ def test_get_bill(sample_event, sample_bill, sample_participant):
 
     response = client.get(
         reverse(
-            "bills:bills-detail",
-            kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
+            "bills-detail", kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk}
         ),
         format="jason",
     )
@@ -81,7 +84,7 @@ def test_get_bill(sample_event, sample_bill, sample_participant):
         "id": sample_bill.id,
         "url": r"http://testserver{}".format(
             reverse(
-                "bills:bills-detail",
+                "bills-detail",
                 kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
             )
         ),
@@ -94,17 +97,18 @@ def test_get_bill(sample_event, sample_bill, sample_participant):
 
 
 @pytest.mark.django_db
-def test_post_bill(sample_event, sample_participant):
+def test_post_bill(sample_event, sample_participant, sample_user):
     """New Bill object should be created."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.participants.add(sample_participant)
     sample_event.save()
 
     assert Bill.objects.filter(title="new bill").count() == 0
     bill_data = {"title": "new bill", "participants": [sample_participant.id]}
     response = client.post(
-        reverse("bills:bills-list", kwargs={"event_pk": sample_event.pk}),
+        reverse("bills-list", kwargs={"event_pk": sample_event.pk}),
         bill_data,
         format="json",
     )
@@ -116,18 +120,18 @@ def test_post_bill(sample_event, sample_participant):
 
 
 @pytest.mark.django_db
-def test_delete_bill(sample_event, sample_bill):
+def test_delete_bill(sample_event, sample_bill, sample_user):
     """Bill object should be deleted."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.bills.add(sample_bill)
     sample_event.save()
 
     assert sample_bill in Bill.objects.filter(title=sample_bill.title)
     response = client.delete(
         reverse(
-            "bills:bills-detail",
-            kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
+            "bills-detail", kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk}
         ),
         format="json",
         follow=True,
@@ -137,10 +141,11 @@ def test_delete_bill(sample_event, sample_bill):
 
 
 @pytest.mark.django_db
-def test_patch_bill(sample_event, sample_bill):
+def test_patch_bill(sample_event, sample_bill, sample_user):
     """sample_bill should have a changed title."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.bills.add(sample_bill)
     sample_event.save()
 
@@ -149,8 +154,7 @@ def test_patch_bill(sample_event, sample_bill):
     assert Bill.objects.filter(title=changed_bill_data["title"]).count() == 0
     response = client.patch(
         reverse(
-            "bills:bills-detail",
-            kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
+            "bills-detail", kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk}
         ),
         changed_bill_data,
         format="json",

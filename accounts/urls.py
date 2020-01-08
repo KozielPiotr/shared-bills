@@ -34,6 +34,4 @@ class UserRouter(SimpleRouter):
 router = UserRouter()
 router.register("user", UserViewset, basename="user")
 
-# app_name = "accounts"
-
 urlpatterns = [path("", include(router.urls))]

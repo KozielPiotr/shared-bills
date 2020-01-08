@@ -29,6 +29,4 @@ event_router.register(
     basename="payments",
 )
 
-app_name = "bills"
-
 urlpatterns = [path("", include(router.urls)), path("", include(event_router.urls))]
