@@ -25,6 +25,8 @@ class EventResourceSerializer(ModelSerializer):
 
 
 class ParticipantField(PrimaryKeyRelatedField):
+    """Allows to choose only from set of participants related to the event"""
+
     def get_queryset(self):
         event = self.context["view"].get_event()
         return Participant.objects.filter(event=event)

@@ -3,8 +3,16 @@
 
 import pytest
 
-from bills.tests.utils import create, delete
+from accounts.models import User
 from bills.models import Bill, Event, Payment, Participant
+from bills.tests.utils import create, delete
+
+
+@pytest.fixture
+def sample_user():
+    """Creates new User object"""
+
+    yield User.objects.create_user(email="Sample user", password="testpassword")
 
 
 @pytest.fixture
@@ -34,24 +42,24 @@ def sample_participant_2():
 
 
 @pytest.fixture
-def sample_event():
+def sample_event(sample_user):
     """Creates new Event object"""
 
-    event = Event(name="Sample event")
+    event = Event(name="Sample event", user=sample_user)
     if event not in Event.objects.all():
         yield create(event)
-    if event in Event.objects.all():
+    if event in Event.objects.filter():
         delete(event)
 
 
 @pytest.fixture
-def sample_event_2():
+def sample_event_2(sample_user):
     """Creates new Event object"""
 
-    event = Event(name="Sample event 2")
+    event = Event(name="Sample event 2", user=sample_user)
     if event not in Event.objects.all():
         yield create(event)
-    if event in Event.objects.all():
+    if event in Event.objects.filter():
         delete(event)
 
 

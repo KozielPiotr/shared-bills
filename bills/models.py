@@ -4,6 +4,8 @@
 from djmoney.models.fields import MoneyField
 from django.db import models
 
+from accounts.models import User
+
 
 class Participant(models.Model):
     """Model for event's participants."""
@@ -32,6 +34,14 @@ class Event(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="paymaster",
+    )
+    user = models.ForeignKey(
+        User,
+        default=None,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="events",
     )
 
     def __str__(self):

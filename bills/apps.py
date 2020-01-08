@@ -1,8 +1,9 @@
-"""bills application config."""
+"""Bills application config."""
+
 from django.apps import AppConfig
 
 
 class BillsAppConfig(AppConfig):
-    """bills application config."""
+    """Bills application config."""
 
     name = "bills"

@@ -1,4 +1,4 @@
-# pylint: disable=no-member
+# pylint: disable=no-member, bad-continuation
 """Tests for bills bills views."""
 
 import json
@@ -11,10 +11,13 @@ from bills.models import Bill
 
 
 @pytest.mark.django_db
-def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant):
+def test_get_bills(
+    sample_event, sample_bill, sample_bill_2, sample_participant, sample_user
+):
     """Request should return all Bill objects data related to sample_event."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_bill.participants.add(sample_participant)
     sample_bill.save()
     sample_event.bills.add(sample_bill)
@@ -60,10 +63,11 @@ def test_get_bills(sample_event, sample_bill, sample_bill_2, sample_participant)
 
 
 @pytest.mark.django_db
-def test_get_bill(sample_event, sample_bill, sample_participant):
+def test_get_bill(sample_event, sample_bill, sample_participant, sample_user):
     """Request should return proper bill data."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_bill.participants.add(sample_participant)
     sample_bill.save()
     sample_event.bills.add(sample_bill)
@@ -93,10 +97,11 @@ def test_get_bill(sample_event, sample_bill, sample_participant):
 
 
 @pytest.mark.django_db
-def test_post_bill(sample_event, sample_participant):
+def test_post_bill(sample_event, sample_participant, sample_user):
     """New Bill object should be created."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.participants.add(sample_participant)
     sample_event.save()
 
@@ -115,10 +120,11 @@ def test_post_bill(sample_event, sample_participant):
 
 
 @pytest.mark.django_db
-def test_delete_bill(sample_event, sample_bill):
+def test_delete_bill(sample_event, sample_bill, sample_user):
     """Bill object should be deleted."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.bills.add(sample_bill)
     sample_event.save()
 
@@ -135,10 +141,11 @@ def test_delete_bill(sample_event, sample_bill):
 
 
 @pytest.mark.django_db
-def test_patch_bill(sample_event, sample_bill):
+def test_patch_bill(sample_event, sample_bill, sample_user):
     """sample_bill should have a changed title."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.bills.add(sample_bill)
     sample_event.save()
 

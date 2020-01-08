@@ -1,4 +1,4 @@
-# pylint: disable=no-member, bad-continuation
+# pylint: disable=no-member, bad-continuation, too-many-arguments
 """Tests for bills payments views."""
 
 import json
@@ -17,10 +17,12 @@ def test_get_payments(
     sample_payment_2,
     sample_participant,
     sample_participant_2,
+    sample_user,
 ):
     """Request should return all Payment objects data related to sample_event."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_payment.issuer = sample_participant
     sample_payment.acquirer = sample_participant_2
     sample_payment.save()
@@ -67,10 +69,11 @@ def test_get_payments(
 
 
 @pytest.mark.django_db
-def test_get_payment(sample_event, sample_payment, sample_participant):
+def test_get_payment(sample_event, sample_payment, sample_participant, sample_user):
     """Request should return all Payment objects data related to sample_event."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_payment.issuer = sample_participant
     sample_payment.save()
     sample_event.payments.add(sample_payment)
@@ -103,10 +106,13 @@ def test_get_payment(sample_event, sample_payment, sample_participant):
 
 
 @pytest.mark.django_db
-def test_post_payment(sample_event, sample_participant, sample_participant_2):
+def test_post_payment(
+    sample_event, sample_participant, sample_participant_2, sample_user
+):
     """New Payment object should be created."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.participants.add(sample_participant, sample_participant_2)
     sample_event.save()
 
@@ -127,10 +133,11 @@ def test_post_payment(sample_event, sample_participant, sample_participant_2):
 
 
 @pytest.mark.django_db
-def test_delete_payment(sample_event, sample_payment):
+def test_delete_payment(sample_event, sample_payment, sample_user):
     """Payment object should be deleted."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.payments.add(sample_payment)
     sample_event.save()
 
@@ -148,10 +155,11 @@ def test_delete_payment(sample_event, sample_payment):
 
 
 @pytest.mark.django_db
-def test_patch_payment(sample_event, sample_payment):
+def test_patch_payment(sample_event, sample_payment, sample_user):
     """sample_payment should have a changed title."""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.payments.add(sample_payment)
     sample_event.save()
 

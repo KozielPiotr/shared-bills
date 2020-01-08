@@ -1,4 +1,4 @@
-# pylint: disable=no-member
+# pylint: disable=no-member, bad-continuation
 """Tests for bills participants views"""
 
 import json
@@ -11,10 +11,13 @@ from bills.models import Participant
 
 
 @pytest.mark.django_db
-def test_get_participants(sample_event, sample_participant, sample_participant_2):
+def test_get_participants(
+    sample_event, sample_participant, sample_participant_2, sample_user
+):
     """Request should return all Participant objects data related to sample_event"""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.participants.add(sample_participant)
     sample_event.participants.add(sample_participant_2)
     sample_event.save()
@@ -57,10 +60,11 @@ def test_get_participants(sample_event, sample_participant, sample_participant_2
 
 
 @pytest.mark.django_db
-def test_get_participant(sample_event, sample_participant):
+def test_get_participant(sample_event, sample_participant, sample_user):
     """Request should return proper participant data"""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.participants.add(sample_participant)
     sample_event.save()
 
@@ -85,10 +89,11 @@ def test_get_participant(sample_event, sample_participant):
 
 
 @pytest.mark.django_db
-def test_post_participant(sample_event):
+def test_post_participant(sample_event, sample_user):
     """New Participant object should be created"""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
 
     assert Participant.objects.filter(username="new participant").count() == 0
     participant_data = {"username": "new participant"}
@@ -102,10 +107,11 @@ def test_post_participant(sample_event):
 
 
 @pytest.mark.django_db
-def test_delete_participant(sample_event, sample_participant):
+def test_delete_participant(sample_event, sample_participant, sample_user):
     """Participant object should be deleted"""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.participants.add(sample_participant)
     sample_event.save()
 
@@ -127,10 +133,11 @@ def test_delete_participant(sample_event, sample_participant):
 
 
 @pytest.mark.django_db
-def test_patch_participant(sample_event, sample_participant):
+def test_patch_participant(sample_event, sample_participant, sample_user):
     """sample_participant should have a changed username"""
 
     client = APIClient()
+    client.login(email=sample_user.email, password="testpassword")
     sample_event.participants.add(sample_participant)
     sample_event.save()
 

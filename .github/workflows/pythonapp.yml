@@ -18,7 +18,7 @@ jobs:
           pip install pipenv
           pipenv install --deploy --system --dev
       - name: Pylint
-        run: pylint shared_bills bills
+        run: pylint shared_bills bills accounts
       - name: Black
         run: black --check ./
       - name: Pytest
