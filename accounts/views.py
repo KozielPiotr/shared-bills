@@ -3,23 +3,26 @@
 
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.mixins import DestroyModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import User
 from accounts.serializers import UserSerializer
 
 
-class UserViewset(ModelViewSet):
+class UserViewset(GenericViewSet, DestroyModelMixin, RetrieveModelMixin):
     """Viewset for User object."""
 
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
-    @action(detail=False, methods=["post"], url_path="register", url_name="register")
-    def register_user(self, request, *args, **kwargs):
-        """Registering new User."""
+    def get_object(self):
+        return self.request.user
 
+    @action(detail=True, methods=["post"], permission_classes=[])
+    def register(self, request, *args, **kwargs):
+        """Registering new User."""
         # todo Should be only available for anonymous user.
         serializer = UserSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():

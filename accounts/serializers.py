@@ -17,7 +17,6 @@ from accounts.models import User
 class UserSerializer(ModelSerializer):
     """Serializer for User object."""
 
-    url = HyperlinkedIdentityField(view_name="accounts:users-detail")
     email = EmailField(
         required=True, validators=[UniqueValidator(queryset=User.objects.all())]
     )
@@ -33,4 +32,4 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "url", "email", "password"]
+        fields = ["id", "email", "password"]

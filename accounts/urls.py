@@ -10,32 +10,20 @@ class UserRouter(SimpleRouter):
     """Customised router for User object"""
 
     routes = [
-        # read-only route for list
         Route(
             url=r"^{prefix}{trailing_slash}$",
-            mapping={"get": "list"},
-            name="{basename}-list",
-            detail=False,
-            initkwargs={"suffix": "List"},
-        ),
-        # detail should be protected
-        Route(
-            url=r"^{prefix}/{lookup}/detail{trailing_slash}$",
-            mapping={"get": "retrieve"},
+            mapping={
+                "get": "retrieve",
+                "put": "update",
+                "patch": "partial_update",
+                "delete": "destroy",
+            },
             name="{basename}-detail",
             detail=True,
             initkwargs={"suffix": "Instance"},
         ),
-        # for user registration
         DynamicRoute(
             url=r"^{prefix}/{url_path}{trailing_slash}$",
-            name="{basename}-{url_name}",
-            detail=False,
-            initkwargs={},
-        ),
-        # for editing user
-        DynamicRoute(
-            url=r"^{prefix}/{lookup}/{url_path}{trailing_slash}$",
             name="{basename}-{url_name}",
             detail=True,
             initkwargs={},
@@ -44,8 +32,8 @@ class UserRouter(SimpleRouter):
 
 
 router = UserRouter()
-router.register("users", UserViewset, basename="users")
+router.register("user", UserViewset, basename="user")
 
-app_name = "accounts"
+# app_name = "accounts"
 
 urlpatterns = [path("", include(router.urls))]
