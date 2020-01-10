@@ -1,13 +1,11 @@
 # pylint: disable=no-member
-"""Tests for bills bills views."""
+"""Tests for bills user views."""
 
 import json
 import pytest
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-
-from accounts.models import User
 
 
 @pytest.mark.django_db
@@ -69,30 +67,3 @@ def test_fail_patch_detail_user(sample_user):
     user_data = {"email": "new@testuser.com", "password": "testpassword"}
     response = client.patch(reverse("user-detail"), user_data, format="json")
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-
-
-@pytest.mark.django_db
-def test_register_user():
-    """New User object should be created."""
-
-    client = APIClient()
-    assert User.objects.filter(email="test@test.com").count() == 0
-
-    user_data = {"email": "test@test.com", "password": "testpassword"}
-    response = client.post(reverse("user-register"), user_data, format="json")
-    assert response.status_code == status.HTTP_201_CREATED
-    assert User.objects.filter(email="test@test.com").count() == 1
-
-
-@pytest.mark.django_db
-def test_register_user_fail_while_logged(sample_user):
-    """New User object should be created."""
-
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
-
-    assert User.objects.filter(email="test@test.com").count() == 0
-
-    user_data = {"email": "test@test.com", "password": "testpassword"}
-    response = client.post(reverse("user-register"), user_data, format="json")
-    assert response.status_code == status.HTTP_403_FORBIDDEN

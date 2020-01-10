@@ -60,7 +60,5 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    def get_absolute_url(self):
-        """Returns absolute url for User object."""
-
-        return "/users/{}/".format(self.pk)
+    def __str__(self):
+        return self.email
