@@ -25,13 +25,27 @@ class UserSerializer(ModelSerializer):
         )
         return user
 
-    def update(self, instance, validated_data):
-        for field in UserSerializer.Meta.fields:
-            setattr(instance, field, validated_data[field])
-        instance.set_password(validated_data["password"])
-        instance.save()
-        return instance
-
     class Meta:
         model = User
         fields = ["id", "email", "password"]
+
+
+class UserChangePasswordSerializer(ModelSerializer):
+    """Serializer for password change."""
+
+    old_password = CharField(write_only=True, required=True)
+    new_password = CharField(min_length=8, write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ["old_password", "new_password"]
+
+
+class UserDeleteSerializer(ModelSerializer):
+    """Serializer for User removal."""
+
+    password = CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ["password"]

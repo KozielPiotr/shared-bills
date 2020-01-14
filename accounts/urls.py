@@ -12,12 +12,7 @@ class UserRouter(SimpleRouter):
     routes = [
         Route(
             url=r"^{prefix}{trailing_slash}$",
-            mapping={
-                "get": "retrieve",
-                "put": "update",
-                "patch": "partial_update",
-                "delete": "destroy",
-            },
+            mapping={"get": "retrieve"},
             name="{basename}-detail",
             detail=True,
             initkwargs={"suffix": "Instance"},
