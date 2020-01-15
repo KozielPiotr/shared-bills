@@ -7,7 +7,6 @@ from rest_framework.serializers import (
     CharField,
     EmailField,
     ModelSerializer,
-    Serializer,
     ValidationError,
 )
 from rest_framework.validators import UniqueValidator
@@ -37,6 +36,8 @@ class UserSerializer(ModelSerializer):
 
 
 class PasswordCheckSerializer(ModelSerializer):
+    """Checks if given password is valid."""
+
     password = CharField(write_only=True, required=True)
 
     class Meta:
@@ -44,6 +45,7 @@ class PasswordCheckSerializer(ModelSerializer):
         fields = ["password"]
 
     def validate_password(self, value):
+        """Raises ValidationError if password is invalid."""
         if not self.instance.check_password(value):
             raise ValidationError("Wrong password")
 

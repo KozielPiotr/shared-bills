@@ -176,14 +176,14 @@ def test_change_password_fail_put(sample_user):
 
 
 @pytest.mark.django_db
-def test_change_password_fail_put(sample_user):
+def test_change_password_fail_patch(sample_user):
     """PUT method should not be allowed."""
 
     client = APIClient()
     client.login(email=sample_user.email, password="testpassword")
 
     password_data = {"email": "test@test.com", "password": "testpassword"}
-    response = client.put(reverse("user-change-password"), password_data, format="json")
+    response = client.patch(reverse("user-change-password"), password_data, format="json")
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
