@@ -3,7 +3,13 @@
 Serializers for accounts application.
 """
 
-from rest_framework.serializers import CharField, EmailField, ModelSerializer
+from rest_framework.serializers import (
+    CharField,
+    EmailField,
+    ModelSerializer,
+    Serializer,
+    ValidationError,
+)
 from rest_framework.validators import UniqueValidator
 
 from accounts.models import User
@@ -30,22 +36,28 @@ class UserSerializer(ModelSerializer):
         fields = ["id", "email", "password"]
 
 
-class UserChangePasswordSerializer(ModelSerializer):
-    """Serializer for password change."""
-
-    old_password = CharField(write_only=True, required=True)
-    new_password = CharField(min_length=8, write_only=True, required=True)
-
-    class Meta:
-        model = User
-        fields = ["old_password", "new_password"]
-
-
-class UserDeleteSerializer(ModelSerializer):
-    """Serializer for User removal."""
-
+class PasswordCheckSerializer(ModelSerializer):
     password = CharField(write_only=True, required=True)
 
     class Meta:
         model = User
         fields = ["password"]
+
+    def validate_password(self, value):
+        if not self.instance.check_password(value):
+            raise ValidationError("Wrong password")
+
+
+class UserChangePasswordSerializer(PasswordCheckSerializer):
+    """Serializer for password change."""
+
+    new_password = CharField(min_length=8, write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ["password", "new_password"]
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data["new_password"])
+        instance.save()
+        return instance

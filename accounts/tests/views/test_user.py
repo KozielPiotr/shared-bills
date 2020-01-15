@@ -8,8 +8,8 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from accounts.serializers import (
+    PasswordCheckSerializer,
     UserChangePasswordSerializer,
-    UserDeleteSerializer,
     UserSerializer,
 )
 from accounts.views import UserViewset
@@ -39,7 +39,7 @@ def test_user_viewset_get_serializer_class_delete_user():
     """When action==delete_user function should return UserDeleteSerializer class."""
 
     viewset = UserViewset(action="delete_user")
-    assert viewset.get_serializer_class() == UserDeleteSerializer
+    assert viewset.get_serializer_class() == PasswordCheckSerializer
 
 
 @pytest.mark.django_db

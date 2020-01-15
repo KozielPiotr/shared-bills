@@ -98,8 +98,8 @@ def test_change_password(sample_user):
     client = APIClient()
     client.login(email=sample_user.email, password="testpassword")
 
-    password_data = {"old_password": "testpassword", "new_password": "changed_password"}
-    response = client.patch(
+    password_data = {"password": "testpassword", "new_password": "changed_password"}
+    response = client.post(
         reverse("user-change-password"), password_data, format="json"
     )
     assert response.status_code == status.HTTP_200_OK
@@ -115,11 +115,8 @@ def test_change_password_fail_wrong_password(sample_user):
     client = APIClient()
     client.login(email=sample_user.email, password="testpassword")
 
-    password_data = {
-        "old_password": "wrongpassword",
-        "new_password": "changed_password",
-    }
-    response = client.patch(
+    password_data = {"password": "wrongpassword", "new_password": "changed_password"}
+    response = client.post(
         reverse("user-change-password"), password_data, format="json"
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -135,8 +132,8 @@ def test_change_password_fail_short_password(sample_user):
     client = APIClient()
     client.login(email=sample_user.email, password="testpassword")
 
-    password_data = {"old_password": "a", "new_password": "changed_password"}
-    response = client.patch(
+    password_data = {"password": "a", "new_password": "changed_password"}
+    response = client.post(
         reverse("user-change-password"), password_data, format="json"
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -167,16 +164,14 @@ def test_change_password_fail_get(sample_user):
 
 
 @pytest.mark.django_db
-def test_change_password_fail_post(sample_user):
-    """POST method should not be allowed."""
+def test_change_password_fail_put(sample_user):
+    """PUT method should not be allowed."""
 
     client = APIClient()
     client.login(email=sample_user.email, password="testpassword")
 
     password_data = {"email": "test@test.com", "password": "testpassword"}
-    response = client.post(
-        reverse("user-change-password"), password_data, format="json"
-    )
+    response = client.put(reverse("user-change-password"), password_data, format="json")
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
@@ -211,7 +206,7 @@ def test_change_password_fail_wrong_data(sample_user):
     client.login(email=sample_user.email, password="testpassword")
 
     password_data = {"email": "test@test.com"}
-    response = client.patch(
+    response = client.post(
         reverse("user-change-password"), password_data, format="json"
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -229,7 +224,7 @@ def test_delete_user(sample_user):
     password_data = {"password": "testpassword"}
 
     response = client.post(reverse("user-delete-user"), password_data, format="json")
-    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert response.status_code == status.HTTP_200_OK
     assert User.objects.filter(email=sample_user.email).count() == 0
 
 
