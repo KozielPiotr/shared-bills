@@ -183,7 +183,9 @@ def test_change_password_fail_patch(sample_user):
     client.login(email=sample_user.email, password="testpassword")
 
     password_data = {"email": "test@test.com", "password": "testpassword"}
-    response = client.patch(reverse("user-change-password"), password_data, format="json")
+    response = client.patch(
+        reverse("user-change-password"), password_data, format="json"
+    )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
