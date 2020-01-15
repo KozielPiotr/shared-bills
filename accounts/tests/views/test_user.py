@@ -1,5 +1,5 @@
 # pylint: disable=no-member
-"""Tests for bills bills views."""
+"""Tests for bills user views."""
 
 import json
 import pytest
@@ -7,7 +7,47 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from accounts.models import User
+from accounts.serializers import (
+    PasswordCheckSerializer,
+    UserChangePasswordSerializer,
+    UserSerializer,
+)
+from accounts.views import UserViewset
+
+
+@pytest.mark.django_db
+def test_user_viewset_get_serializer_class_register():
+    """When action==register function should return UserSerializer class."""
+
+    viewset = UserViewset(action="register")
+    assert viewset.get_serializer_class() == UserSerializer
+
+
+@pytest.mark.django_db
+def test_user_viewset_get_serializer_class_change_password():
+    """
+    When action==change_password function should return
+    UserChangePasswordSerializer class.
+    """
+
+    viewset = UserViewset(action="change_password")
+    assert viewset.get_serializer_class() == UserChangePasswordSerializer
+
+
+@pytest.mark.django_db
+def test_user_viewset_get_serializer_class_delete_user():
+    """When action==delete_user function should return UserDeleteSerializer class."""
+
+    viewset = UserViewset(action="delete_user")
+    assert viewset.get_serializer_class() == PasswordCheckSerializer
+
+
+@pytest.mark.django_db
+def test_user_viewset_get_serializer_class_other():
+    """Default serializer class should be UserSerializer."""
+
+    viewset = UserViewset(action="other")
+    assert viewset.get_serializer_class() == UserSerializer
 
 
 @pytest.mark.django_db
@@ -25,14 +65,14 @@ def test_get_user(sample_user):
 
 
 @pytest.mark.django_db
-def test_delete_detail_user(sample_user):
-    """DELETE method should be allowed."""
+def test_fail_delete_detail_user(sample_user):
+    """DELETE method should not be allowed."""
 
     client = APIClient()
     client.login(email=sample_user.email, password="testpassword")
 
     response = client.delete(reverse("user-detail"), format="json")
-    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
 @pytest.mark.django_db
@@ -69,30 +109,3 @@ def test_fail_patch_detail_user(sample_user):
     user_data = {"email": "new@testuser.com", "password": "testpassword"}
     response = client.patch(reverse("user-detail"), user_data, format="json")
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-
-
-@pytest.mark.django_db
-def test_register_user():
-    """New User object should be created."""
-
-    client = APIClient()
-    assert User.objects.filter(email="test@test.com").count() == 0
-
-    user_data = {"email": "test@test.com", "password": "testpassword"}
-    response = client.post(reverse("user-register"), user_data, format="json")
-    assert response.status_code == status.HTTP_201_CREATED
-    assert User.objects.filter(email="test@test.com").count() == 1
-
-
-@pytest.mark.django_db
-def test_register_user_fail_while_logged(sample_user):
-    """New User object should be created."""
-
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
-
-    assert User.objects.filter(email="test@test.com").count() == 0
-
-    user_data = {"email": "test@test.com", "password": "testpassword"}
-    response = client.post(reverse("user-register"), user_data, format="json")
-    assert response.status_code == status.HTTP_403_FORBIDDEN

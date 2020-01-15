@@ -7,6 +7,7 @@ omit =
     */tests/*,
     */migrations/*,
     bills/apps.py,
+    accounts/apps.py,
     shared_bills/asgi.py,
     shared_bills/settings.py,
     shared_bills/wsgi.py,
