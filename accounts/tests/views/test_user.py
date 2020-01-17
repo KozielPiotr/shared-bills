@@ -13,6 +13,7 @@ from accounts.serializers import (
     UserSerializer,
 )
 from accounts.views import UserViewset
+from accounts.tests.utils import auth_client
 
 
 @pytest.mark.django_db
@@ -54,8 +55,7 @@ def test_user_viewset_get_serializer_class_other():
 def test_get_user(sample_user):
     """Request should return proper event data."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     response = client.get(reverse("user-detail"), format="json")
     assert response.status_code == status.HTTP_200_OK
@@ -65,11 +65,20 @@ def test_get_user(sample_user):
 
 
 @pytest.mark.django_db
+def test_get_user_fail_unauthorised():
+    """View should not be accessible for unauthorised users."""
+
+    client = APIClient()
+
+    response = client.get(reverse("user-detail"), format="json")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
 def test_fail_delete_detail_user(sample_user):
     """DELETE method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     response = client.delete(reverse("user-detail"), format="json")
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -79,8 +88,7 @@ def test_fail_delete_detail_user(sample_user):
 def test_fail_post_detail_user(sample_user):
     """POST method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     user_data = {"email": "new@testuser.com", "password": "testpassword"}
     response = client.post(reverse("user-detail"), user_data, format="json")
@@ -91,8 +99,7 @@ def test_fail_post_detail_user(sample_user):
 def test_fail_put_detail_user(sample_user):
     """PUT method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     user_data = {"email": "new@testuser.com", "password": "testpassword"}
     response = client.put(reverse("user-detail"), user_data, format="json")
@@ -103,8 +110,7 @@ def test_fail_put_detail_user(sample_user):
 def test_fail_patch_detail_user(sample_user):
     """PATCH method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     user_data = {"email": "new@testuser.com", "password": "testpassword"}
     response = client.patch(reverse("user-detail"), user_data, format="json")

@@ -12,14 +12,18 @@ from bills.models import Event
 def sample_user():
     """Creates new User object"""
 
-    yield User.objects.create_user(email="sample@user.com", password="testpassword")
+    yield User.objects.create_user(
+        email="sample@user.com", password="testpassword", is_active=True
+    )
 
 
 @pytest.fixture
 def sample_user_2():
     """Creates new User object"""
 
-    yield User.objects.create_user(email="sample2@user.com", password="testpassword")
+    yield User.objects.create_user(
+        email="sample2@user.com", password="testpassword", is_active=True
+    )
 
 
 @pytest.fixture

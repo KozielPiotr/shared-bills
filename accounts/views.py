@@ -1,7 +1,6 @@
 # pylint: disable=unused-argument, too-many-ancestors
 """Views for accounts application."""
 
-from django.contrib.auth import get_user
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin
@@ -40,7 +39,7 @@ class UserViewset(GenericViewSet, CreateModelMixin, RetrieveModelMixin):
         return UserSerializer
 
     def get_object(self):
-        return get_user(self.request)
+        return self.request.user
 
     @action(detail=True, methods=["post"], permission_classes=[IsAnonymous])
     def register(self, request, *args, **kwargs):

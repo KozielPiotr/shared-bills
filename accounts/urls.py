@@ -32,6 +32,6 @@ router.register("user", UserViewset, basename="user")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("token/", TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path("verify-token/", TokenVerifyView.as_view(), name='token_verify'),
+    path("token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
+    path("verify-token/", TokenVerifyView.as_view(), name="token-verify"),
 ]
