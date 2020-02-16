@@ -10,8 +10,8 @@ from rest_framework.routers import APIRootView
 api_root_views = {
     "events": "events-list",
     "user": "user-detail",
-    "get token": "token_obtain_pair",
-    "verify token": "token_verify",
+    "get token": "token-obtain-pair",
+    "verify token": "token-verify",
 }
 
 urlpatterns = [
