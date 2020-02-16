@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from bills.models import Payment
+from bills.tests.utils import auth_client
 
 
 @pytest.mark.django_db
@@ -21,8 +22,8 @@ def test_get_payments(
 ):
     """Request should return all Payment objects data related to sample_event."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
     sample_payment.issuer = sample_participant
     sample_payment.acquirer = sample_participant_2
     sample_payment.save()
@@ -69,11 +70,62 @@ def test_get_payments(
 
 
 @pytest.mark.django_db
-def test_get_payment(sample_event, sample_payment, sample_participant, sample_user):
-    """Request should return all Payment objects data related to sample_event."""
+def test_get_payments_fail_logged_out(
+    sample_event,
+    sample_payment,
+    sample_payment_2,
+    sample_participant,
+    sample_participant_2,
+):
+    """"Only logged users should have access to this view."""
 
     client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+
+    sample_payment.issuer = sample_participant
+    sample_payment.acquirer = sample_participant_2
+    sample_payment.save()
+    sample_event.payments.add(sample_payment)
+    sample_event.payments.add(sample_payment_2)
+    sample_event.save()
+
+    response = client.get(
+        reverse("payments-list", kwargs={"event_pk": sample_event.pk}), format="json"
+    )
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_get_payments_fail_other_user(
+    sample_event,
+    sample_payment,
+    sample_payment_2,
+    sample_participant,
+    sample_participant_2,
+    sample_user_2,
+):
+    """User should not have access to other user's event's payments."""
+
+    client = auth_client(APIClient(), sample_user_2.email, "testpassword")
+
+    sample_payment.issuer = sample_participant
+    sample_payment.acquirer = sample_participant_2
+    sample_payment.save()
+    sample_event.payments.add(sample_payment)
+    sample_event.payments.add(sample_payment_2)
+    sample_event.save()
+
+    response = client.get(
+        reverse("payments-list", kwargs={"event_pk": sample_event.pk}), format="json"
+    )
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+def test_get_payment(sample_event, sample_payment, sample_participant, sample_user):
+    """Request should return proper payment data."""
+
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
     sample_payment.issuer = sample_participant
     sample_payment.save()
     sample_event.payments.add(sample_payment)
@@ -106,13 +158,57 @@ def test_get_payment(sample_event, sample_payment, sample_participant, sample_us
 
 
 @pytest.mark.django_db
+def test_get_payment_fail_logged_out(sample_event, sample_payment, sample_participant):
+    """Only logged users should have access to this view."""
+
+    client = APIClient()
+
+    sample_payment.issuer = sample_participant
+    sample_payment.save()
+    sample_event.payments.add(sample_payment)
+    sample_event.save()
+
+    response = client.get(
+        reverse(
+            "payments-detail",
+            kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
+        ),
+        format="json",
+    )
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_get_payment_fail_other_user(
+    sample_event, sample_payment, sample_participant, sample_user_2
+):
+    """User should not have access to other user's event's payments."""
+
+    client = auth_client(APIClient(), sample_user_2.email, "testpassword")
+
+    sample_payment.issuer = sample_participant
+    sample_payment.save()
+    sample_event.payments.add(sample_payment)
+    sample_event.save()
+
+    response = client.get(
+        reverse(
+            "payments-detail",
+            kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
+        ),
+        format="json",
+    )
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
 def test_post_payment(
     sample_event, sample_participant, sample_participant_2, sample_user
 ):
     """New Payment object should be created."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
     sample_event.participants.add(sample_participant, sample_participant_2)
     sample_event.save()
 
@@ -133,11 +229,35 @@ def test_post_payment(
 
 
 @pytest.mark.django_db
+def test_post_payment_logged_out(
+    sample_event, sample_participant, sample_participant_2
+):
+    """Only logged users should have access to this view."""
+
+    client = APIClient()
+
+    sample_event.participants.add(sample_participant, sample_participant_2)
+    sample_event.save()
+
+    bill_data = {
+        "title": "new payment",
+        "issuer": sample_participant.id,
+        "acquirer": sample_participant_2.id,
+    }
+    response = client.post(
+        reverse("payments-list", kwargs={"event_pk": sample_event.pk}),
+        bill_data,
+        format="json",
+    )
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
 def test_delete_payment(sample_event, sample_payment, sample_user):
     """Payment object should be deleted."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
     sample_event.payments.add(sample_payment)
     sample_event.save()
 
@@ -155,11 +275,32 @@ def test_delete_payment(sample_event, sample_payment, sample_user):
 
 
 @pytest.mark.django_db
+def test_delete_payment_logged_out(sample_event, sample_payment):
+    """Only logged users should have access to this view."""
+
+    client = APIClient()
+
+    sample_event.payments.add(sample_payment)
+    sample_event.save()
+
+    assert sample_payment in Payment.objects.filter(title=sample_payment.title)
+    response = client.delete(
+        reverse(
+            "payments-detail",
+            kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
+        ),
+        format="json",
+        follow=True,
+    )
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
 def test_patch_payment(sample_event, sample_payment, sample_user):
     """sample_payment should have a changed title."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
     sample_event.payments.add(sample_payment)
     sample_event.save()
 
@@ -177,3 +318,24 @@ def test_patch_payment(sample_event, sample_payment, sample_user):
     assert response.status_code == status.HTTP_200_OK
     assert sample_payment not in Payment.objects.filter(title=sample_payment.title)
     assert Payment.objects.filter(title=changed_payment_data["title"]).count() == 1
+
+
+@pytest.mark.django_db
+def test_patch_payment_logged_out(sample_event, sample_payment):
+    """Only logged users should have access to this view."""
+
+    client = APIClient()
+
+    sample_event.payments.add(sample_payment)
+    sample_event.save()
+
+    changed_payment_data = {"title": "new test bill"}
+    response = client.patch(
+        reverse(
+            "payments-detail",
+            kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
+        ),
+        changed_payment_data,
+        format="json",
+    )
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED

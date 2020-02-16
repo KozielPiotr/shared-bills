@@ -16,6 +16,13 @@ def sample_user():
 
 
 @pytest.fixture
+def sample_user_2():
+    """Creates new User object"""
+
+    yield User.objects.create_user(email="Sample user 2", password="testpassword")
+
+
+@pytest.fixture
 def sample_participant():
     """Creates new Participant object"""
 
@@ -53,10 +60,10 @@ def sample_event(sample_user):
 
 
 @pytest.fixture
-def sample_event_2(sample_user):
+def sample_event_2(sample_user_2):
     """Creates new Event object"""
 
-    event = Event(name="Sample event 2", user=sample_user)
+    event = Event(name="Sample event 2", user=sample_user_2)
     if event not in Event.objects.all():
         yield create(event)
     if event in Event.objects.filter():

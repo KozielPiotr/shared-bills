@@ -7,7 +7,12 @@ from django.urls import include, path
 from rest_framework.routers import APIRootView
 
 
-api_root_views = {"events": "events-list", "user": "user-detail"}
+api_root_views = {
+    "events": "events-list",
+    "user": "user-detail",
+    "get token": "token-obtain-pair",
+    "verify token": "token-verify",
+}
 
 urlpatterns = [
     path("admin/", admin.site.urls),

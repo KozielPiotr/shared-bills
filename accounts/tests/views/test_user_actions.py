@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from accounts.models import User
+from accounts.tests.utils import auth_client
 
 
 # UserViewset.register
@@ -27,8 +28,7 @@ def test_register_user():
 def test_register_user_fail_while_logged(sample_user):
     """Access should be forbidden for logged user."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     assert User.objects.filter(email="test@test.com").count() == 0
 
@@ -95,8 +95,7 @@ def test_register_user_fail_wrong_data():
 def test_change_password(sample_user):
     """User object password should be changed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     password_data = {"password": "testpassword", "new_password": "changed_password"}
     response = client.post(
@@ -112,8 +111,7 @@ def test_change_password_fail_wrong_password(sample_user):
     with incorrect password provided.
     """
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     password_data = {"password": "wrongpassword", "new_password": "changed_password"}
     response = client.post(
@@ -129,8 +127,7 @@ def test_change_password_fail_short_password(sample_user):
     with too short password provided.
     """
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     password_data = {"password": "a", "new_password": "changed_password"}
     response = client.post(
@@ -149,15 +146,14 @@ def test_change_password_fail_while_logged_out():
     response = client.patch(
         reverse("user-change-password"), password_data, format="json"
     )
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.django_db
 def test_change_password_fail_get(sample_user):
     """GET method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     response = client.get(reverse("user-change-password"), format="json")
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -167,8 +163,7 @@ def test_change_password_fail_get(sample_user):
 def test_change_password_fail_put(sample_user):
     """PUT method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     password_data = {"email": "test@test.com", "password": "testpassword"}
     response = client.put(reverse("user-change-password"), password_data, format="json")
@@ -179,8 +174,7 @@ def test_change_password_fail_put(sample_user):
 def test_change_password_fail_patch(sample_user):
     """PUT method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     password_data = {"email": "test@test.com", "password": "testpassword"}
     response = client.patch(
@@ -193,8 +187,7 @@ def test_change_password_fail_patch(sample_user):
 def test_change_password_fail_delete(sample_user):
     """DELETE method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     response = client.delete(reverse("user-change-password"), format="json")
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -204,8 +197,7 @@ def test_change_password_fail_delete(sample_user):
 def test_change_password_fail_wrong_data(sample_user):
     """Passing wrong data (eg. email instead of password) should return HTTP_400."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     password_data = {"email": "test@test.com"}
     response = client.post(
@@ -219,8 +211,7 @@ def test_change_password_fail_wrong_data(sample_user):
 def test_delete_user(sample_user):
     """Sample_user object should be deleted."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     assert User.objects.filter(email=sample_user.email).count() == 1
     password_data = {"password": "testpassword"}
@@ -234,8 +225,7 @@ def test_delete_user(sample_user):
 def test_delete_user_fail_wrong_password(sample_user):
     """Sample_user object should not be deleted with wrong password provided."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     assert User.objects.filter(email=sample_user.email).count() == 1
     password_data = {"password": "wrongpassword"}
@@ -249,8 +239,7 @@ def test_delete_user_fail_wrong_password(sample_user):
 def test_delete_user_fail_short_password(sample_user):
     """Sample_user object should not be deleted with too short password provided."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     assert User.objects.filter(email=sample_user.email).count() == 1
     password_data = {"password": "a"}
@@ -270,7 +259,7 @@ def test_delete_user_fail_while_logged_out(sample_user):
     password_data = {"password": "testpassword"}
 
     response = client.post(reverse("user-delete-user"), password_data, format="json")
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert User.objects.all().count() == 1
 
 
@@ -278,8 +267,7 @@ def test_delete_user_fail_while_logged_out(sample_user):
 def test_delete_user_fail_get(sample_user):
     """GET method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     assert User.objects.all().count() == 1
 
@@ -292,8 +280,7 @@ def test_delete_user_fail_get(sample_user):
 def test_delete_user_fail_put(sample_user):
     """PUT method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     assert User.objects.all().count() == 1
     password_data = {"password": "testpassword"}
@@ -307,8 +294,7 @@ def test_delete_user_fail_put(sample_user):
 def test_delete_user_fail_patch(sample_user):
     """PATCH method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     assert User.objects.all().count() == 1
     password_data = {"password": "testpassword"}
@@ -322,8 +308,7 @@ def test_delete_user_fail_patch(sample_user):
 def test_delete_user_fail_delete(sample_user):
     """DELETE method should not be allowed."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     assert User.objects.all().count() == 1
 
@@ -336,8 +321,7 @@ def test_delete_user_fail_delete(sample_user):
 def test_delete_user_fail_wrong_data(sample_user):
     """Passing wrong data (eg. email instead of password) should return HTTP_400."""
 
-    client = APIClient()
-    client.login(email=sample_user.email, password="testpassword")
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
 
     assert User.objects.all().count() == 1
 

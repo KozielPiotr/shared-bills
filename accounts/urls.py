@@ -1,6 +1,7 @@
 """Urls for bills application."""
 
 from django.urls import include, path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView
 from rest_framework.routers import DynamicRoute, Route, SimpleRouter
 
 from accounts.views import UserViewset
@@ -29,4 +30,8 @@ class UserRouter(SimpleRouter):
 router = UserRouter()
 router.register("user", UserViewset, basename="user")
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [
+    path("", include(router.urls)),
+    path("token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
+    path("verify-token/", TokenVerifyView.as_view(), name="token-verify"),
+]
