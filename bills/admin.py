@@ -11,27 +11,31 @@ class ParticipantAdmin(admin.ModelAdmin):
 
     model = Participant
     list_display = ["username", "event"]
+    list_filter = ["event"]
 
 
 class EventAdmin(admin.ModelAdmin):
     """Admin view for Event."""
 
     model = Event
-    list_display = ["name", "paymaster"]
+    list_display = ["name", "user"]
+    list_filter = ["user"]
 
 
 class BillAdmin(admin.ModelAdmin):
     """Admin view for Bill."""
 
     model = Bill
-    list_display = ["title", "amount", "event"]
+    list_display = ["event", "title", "amount", "payer"]
+    list_filter = ["event"]
 
 
 class PaymentAdmin(admin.ModelAdmin):
     """Admin view for Payment."""
 
     model = Payment
-    list_display = ["title", "issuer", "acquirer", "event", "amount"]
+    list_display = ["event", "title", "amount", "issuer", "acquirer"]
+    list_filter = ["event"]
 
 
 admin.site.register(Participant, ParticipantAdmin)
