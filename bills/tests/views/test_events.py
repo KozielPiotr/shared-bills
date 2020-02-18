@@ -67,7 +67,7 @@ def test_get_events_fail_logged_out():
 def test_get_event(
     sample_event, sample_participant, sample_bill, sample_payment, sample_user
 ):
-    """Request should return proper event data."""
+    """Response status code should be 200."""
 
     client = auth_client(APIClient(), sample_user.email, "testpassword")
 
@@ -79,73 +79,206 @@ def test_get_event(
         reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
     )
     assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_get_event_id(sample_event, sample_user):
+    """Id of event in response should be sample_event's id."""
+
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
     assert response.data["id"] == sample_event.pk
-    assert response.data["name"] == sample_event.name
+
+
+@pytest.mark.django_db
+def test_get_event_paymaster_none(sample_event, sample_user):
+    """No paymaster set. Response paymaster should be None."""
+
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
     assert response.data["paymaster"] is None
-    # assert response.data == {
-    #     "url": "http://testserver{}".format(
-    #         reverse("events-detail", kwargs={"pk": sample_event.pk})
-    #     ),
-    #     "participants_url": "http://testserver{}".format(
-    #         reverse("participants-list", kwargs={"event_pk": sample_event.pk})
-    #     ),
-    #     "bills_url": "http://testserver{}".format(
-    #         reverse("bills-list", kwargs={"event_pk": sample_event.pk})
-    #     ),
-    #     "payments_url": "http://testserver{}".format(
-    #         reverse("payments-list", kwargs={"event_pk": sample_event.pk})
-    #     ),
-    #     "participants": [
-    #         {
-    #             "id": sample_participant.pk,
-    #             "url": r"http://testserver{}".format(
-    #                 reverse(
-    #                     "participants-detail",
-    #                     kwargs={
-    #                         "event_pk": sample_event.pk,
-    #                         "pk": sample_participant.pk,
-    #                     },
-    #                 )
-    #             ),
-    #             "username": sample_participant.username,
-    #             "event": sample_event.pk,
-    #         }
-    #     ],
-    #     "bills": [
-    #         {
-    #             "id": sample_bill.pk,
-    #             "url": r"http://testserver{}".format(
-    #                 reverse(
-    #                     "bills-detail",
-    #                     kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
-    #                 )
-    #             ),
-    #             "participants": [],
-    #             "title": sample_bill.title,
-    #             "amount_currency": "PLN",
-    #             "amount": "0.00",
-    #             "event": sample_event.pk,
-    #             "payer": sample_bill.payer,
-    #         }
-    #     ],
-    #     "payments": [
-    #         {
-    #             "id": sample_payment.pk,
-    #             "url": r"http://testserver{}".format(
-    #                 reverse(
-    #                     "payments-detail",
-    #                     kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
-    #                 )
-    #             ),
-    #             "issuer": sample_payment.issuer.pk,
-    #             "acquirer": sample_payment.acquirer.pk,
-    #             "title": sample_payment.title,
-    #             "amount_currency": "PLN",
-    #             "amount": "0.00",
-    #             "event": sample_event.pk,
-    #         }
-    #     ],
-    # }
+
+
+@pytest.mark.django_db
+def test_get_event_paymaster(sample_event, sample_user, sample_participant):
+    """Response paymaster should be dict with sample_participant."""
+    sample_participant.event = sample_event
+    sample_participant.save()
+
+    sample_event.paymaster = sample_participant
+    sample_event.save()
+
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
+
+    assert response.data["paymaster"] == {
+        "id": sample_participant.pk,
+        "url": r"http://testserver{}".format(
+            reverse(
+                "participants-detail",
+                kwargs={"event_pk": sample_event.pk, "pk": sample_participant.pk},
+            )
+        ),
+        "username": sample_participant.username,
+    }
+
+
+@pytest.mark.django_db
+def test_get_event_url(sample_event, sample_user):
+    """Url of event in response should be sample_event's url."""
+
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
+    assert response.data["url"] == "http://testserver{}".format(
+        reverse("events-detail", kwargs={"pk": sample_event.pk})
+    )
+
+
+@pytest.mark.django_db
+def test_get_event_participants_url(sample_event, sample_user):
+    """Participants_url of event in response should be sample_event's participants_url."""
+
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
+    assert response.data["participants_url"] == "http://testserver{}".format(
+        reverse("participants-list", kwargs={"event_pk": sample_event.pk})
+    )
+
+
+@pytest.mark.django_db
+def test_get_event_bills_url(sample_event, sample_user):
+    """Participants_url of event in response should be sample_event's participants_url."""
+
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
+    assert response.data["bills_url"] == "http://testserver{}".format(
+        reverse("bills-list", kwargs={"event_pk": sample_event.pk})
+    )
+
+
+@pytest.mark.django_db
+def test_get_event_payments_url(sample_event, sample_user):
+    """Participants_url of event in response should be sample_event's participants_url."""
+
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
+    assert response.data["payments_url"] == "http://testserver{}".format(
+        reverse("payments-list", kwargs={"event_pk": sample_event.pk})
+    )
+
+
+@pytest.mark.django_db
+def test_get_event_participants(sample_event, sample_user, sample_participant):
+    """Participants of event in response should be sample_event's participants."""
+
+    sample_event.participants.add(sample_participant)
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
+    assert response.data["participants"] == [
+        {
+            "id": sample_participant.pk,
+            "url": r"http://testserver{}".format(
+                reverse(
+                    "participants-detail",
+                    kwargs={"event_pk": sample_event.pk, "pk": sample_participant.pk},
+                )
+            ),
+            "username": sample_participant.username,
+        }
+    ]
+
+
+@pytest.mark.django_db
+def test_get_event_bills(sample_event, sample_user, sample_bill):
+    """Bills of event in response should be sample_event's bills."""
+
+    sample_event.bills.add(sample_bill)
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
+    assert response.data["bills"] == [
+        {
+            "id": sample_bill.pk,
+            "url": r"http://testserver{}".format(
+                reverse(
+                    "bills-detail",
+                    kwargs={"event_pk": sample_event.pk, "pk": sample_bill.pk},
+                )
+            ),
+            "participants": [],
+            "title": sample_bill.title,
+            "amount_currency": "PLN",
+            "amount": "0.00",
+            "event": sample_event.pk,
+            "payer": sample_bill.payer,
+        }
+    ]
+
+
+@pytest.mark.django_db
+def test_get_event_payments(sample_event, sample_user, sample_payment):
+    """Payments of event in response should be sample_event's payments."""
+
+    sample_event.payments.add(sample_payment)
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
+    assert response.data["payments"] == [
+        {
+            "id": sample_payment.pk,
+            "url": r"http://testserver{}".format(
+                reverse(
+                    "payments-detail",
+                    kwargs={"event_pk": sample_event.pk, "pk": sample_payment.pk},
+                )
+            ),
+            "issuer": sample_payment.issuer.pk,
+            "acquirer": sample_payment.acquirer.pk,
+            "title": sample_payment.title,
+            "amount_currency": "PLN",
+            "amount": "0.00",
+            "event": sample_event.pk,
+        }
+    ]
+
+
+@pytest.mark.django_db
+def test_get_event_name(sample_event, sample_user):
+    """Name of event in response should be sample_event's name."""
+
+    client = auth_client(APIClient(), sample_user.email, "testpassword")
+
+    response = client.get(
+        reverse("events-detail", kwargs={"pk": sample_event.pk}), format="json"
+    )
+    assert response.data["name"] == sample_event.name
 
 
 @pytest.mark.django_db
