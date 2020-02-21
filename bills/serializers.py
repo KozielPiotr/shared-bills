@@ -53,7 +53,7 @@ class ParticipantNestedSerializer(ModelSerializer):
 
     class Meta:
         model = Participant
-        fields = "__all__"
+        exclude = ["event"]
 
 
 class BillSerializer(EventResourceSerializer):
@@ -113,6 +113,9 @@ class PaymentNestedSerializer(ModelSerializer):
 class EventSerializer(ModelSerializer):
     """Serializer for Event object."""
 
+    user = HiddenField(default=None)
+    paymaster = ParticipantNestedSerializer(required=False)
+
     url = HyperlinkedIdentityField(view_name="events-detail")
     participants_url = HyperlinkedIdentityField(
         view_name="participants-list", lookup_url_kwarg="event_pk"
@@ -127,6 +130,22 @@ class EventSerializer(ModelSerializer):
     class Meta:
         model = Event
         fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["user"].default = self.context["request"].user
+
+    def create(self, validated_data):
+        paymaster_data = None
+        if "paymaster" in validated_data:
+            paymaster_data = validated_data.pop("paymaster")
+
+        event = Event.objects.create(**validated_data)
+
+        if paymaster_data:
+            event.paymaster = Participant.objects.create(event=event, **paymaster_data)
+            event.save()
+        return event
 
 
 class EventRetrieveSerializer(EventSerializer):
