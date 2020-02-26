@@ -7,7 +7,7 @@ import React from "react"
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Grid, Paper, Typography } from "@material-ui/core";
 
-import LoginForm from "./LoginForm"
+import LoginForm from "./loginForm/LoginForm"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -31,15 +31,6 @@ const useStyles = makeStyles(() =>
       padding: "1%",
       textAlign: "center",
     },
-    welcome: {
-      textAlign: "center",
-    },
-    textFieldGrid: {
-      paddingTop: "3%"
-    },
-    textField: {
-      width: "85%",
-    }
   }),
 );
 
