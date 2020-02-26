@@ -1,5 +1,5 @@
 import { Observable, BehaviorSubject } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 
 import apiService from "./api";
 import { localStorageService } from "./storage";
@@ -17,15 +17,14 @@ class AuthService {
     return this.tokenSubject$.pipe(map(token => !!token));
   }
 
-  public login(authData: { email: string; password: string }) {
-    apiService
-      .post("/token/", authData)
-      .pipe(map(ajax => ajax.response.access))
-      .subscribe(
-        token => this.tokenSubject$.next(token),
-        error => alert(error)
-      );
-  }
+  public login = (authData: {
+    email: string;
+    password: string;
+  }): Observable<any> =>
+    apiService.post("/token/", authData).pipe(
+      map(ajax => ajax.response.access),
+      tap(token => this.tokenSubject$.next(token))
+    );
 
   public logout = () => this.tokenSubject$.next(null);
 }

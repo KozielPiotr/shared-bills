@@ -45,7 +45,7 @@ function LoginForm() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    authService.login(authData);
+    authService.login(authData).subscribe({ error: error => alert(error) });
   };
 
   return (
