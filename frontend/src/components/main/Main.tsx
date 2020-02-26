@@ -7,43 +7,31 @@ import React from "react";
 import { Observable } from "rxjs";
 
 import authService from "../../services/auth";
-import apiService from "../../services/api"
-
 
 /**
  * Main component for main page
  */
 function MainPage() {
-
   const useObservable = (observable: Observable<boolean>) => {
     const [state, setState] = React.useState();
-  
+
     React.useEffect(() => {
       const sub = observable.subscribe(setState);
       return () => sub.unsubscribe();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-  
+
     return state;
   };
 
-  const isAuthenticated = useObservable(authService.isAuthenticated())
-
-  const handleLogin = () => {
-    apiService.login("admin@admin.com", "a")
-  }
-
-  const handleLogout = () => {
-    apiService.logout()
-  }
+  const isAuthenticated = useObservable(authService.isAuthenticated());
 
   return (
     <div>
-      <p>{isAuthenticated ? "Hello" : "Unauthorized"}</p>
-      <p>{localStorage.getItem("token")}</p>
-      <p><button onClick={handleLogin}>Login</button></p>
-      <p><button onClick={handleLogout}>Logout</button></p>
+      <p>
+        <button onClick={authService.logout}>Logout</button>
+      </p>
     </div>
-
   );
 }
 

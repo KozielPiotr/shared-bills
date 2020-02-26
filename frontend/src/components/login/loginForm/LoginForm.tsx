@@ -2,22 +2,23 @@
  * Form for email and password to log in
  */
 
-import React, { Fragment } from "react"
+import React from "react";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 
-import EmailField from "./LoginFormEmail"
-import PasswordField from "./LoginFormPassword"
+import EmailField from "./LoginFormEmail";
+import PasswordField from "./LoginFormPassword";
 
+import authService from "../../../services/auth";
 
 const useStyles = makeStyles(() =>
   createStyles({
     button: {
       marginTop: "3%",
-      width: "85%",
-    },
-  }),
+      width: "85%"
+    }
+  })
 );
 
 interface State {
@@ -25,42 +26,45 @@ interface State {
   password: string;
 }
 
-
 /**
  * Form with user email and password
  */
 function LoginForm() {
+  const classes = useStyles();
 
-  const [values, setValues] = React.useState<State>({
+  const [authData, setAuthData] = React.useState<State>({
     email: "",
-    password: "",
+    password: ""
   });
 
-  const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value });
+  const handleChange = (prop: keyof State) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setAuthData({ ...authData, [prop]: event.target.value });
   };
 
-  const classes = useStyles()
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    authService.login(authData);
+  };
 
   return (
-    <Fragment>
-      <EmailField 
-        handleChange={handleChange("email")}
-        email={values.email}
-      />
+    <form onSubmit={handleSubmit}>
+      <EmailField handleChange={handleChange("email")} email={authData.email} />
       <PasswordField
         handleChange={handleChange("password")}
-        password={values.password}
+        password={authData.password}
       />
       <Button
+        type="submit"
         className={classes.button}
         variant="contained"
         color="primary"
       >
         Log in
       </Button>
-    </Fragment>
+    </form>
   );
 }
 
-export default LoginForm
+export default LoginForm;

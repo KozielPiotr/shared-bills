@@ -1,26 +1,24 @@
-import React, { Fragment } from "react";
-import {
-	BrowserRouter as Router,
-	Route,
-} from "react-router-dom"
+import React from "react";
 
-import MainPage from "./main/Main"
-import LoginPage from "./login/Login"
+import authService from "../services/auth";
 
+import MainPage from "./main/Main";
+import LoginPage from "./login/Login";
 
 /**
  * Main application function
  */
 function App() {
+  const [isAuthenticated, setAuthenticated] = React.useState<boolean>(false);
 
-  return (
-    <Fragment>
-    <Router>
-			<Route exact path="/" component={MainPage} />
-      <Route exact path="/login" component={LoginPage} />
-		</Router>
-    </Fragment>
-  );
+  React.useEffect(() => {
+    const subscription = authService
+      .isAuthenticated()
+      .subscribe(setAuthenticated);
+    return () => subscription.unsubscribe();
+  }, []);
+
+  return isAuthenticated ? <MainPage /> : <LoginPage />;
 }
 
 export default App;
