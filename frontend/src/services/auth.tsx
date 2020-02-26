@@ -1,11 +1,13 @@
 import { Observable, BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
 
+import { localStorageService } from "./storage"
+
 class AuthService {
-  private tokenSubject = new BehaviorSubject<string | null>(null);
+  private tokenSubject$ = new BehaviorSubject<string | null>(localStorageService.getToken());
 
   public isAuthenticated(): Observable<boolean> {
-    return this.tokenSubject.pipe(map(token => !!token));
+    return this.tokenSubject$.pipe(map(token => !!token));
   }
 }
 
