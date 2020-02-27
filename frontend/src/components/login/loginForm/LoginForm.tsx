@@ -5,7 +5,7 @@
 import React from "react";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 
 import EmailField from "./LoginFormEmail";
 import PasswordField from "./LoginFormPassword";
@@ -21,7 +21,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-interface State {
+interface AuthState {
   email: string;
   password: string;
 }
@@ -32,12 +32,14 @@ interface State {
 function LoginForm() {
   const classes = useStyles();
 
-  const [authData, setAuthData] = React.useState<State>({
+  const [authData, setAuthData] = React.useState<AuthState>({
     email: "",
     password: ""
   });
 
-  const handleChange = (prop: keyof State) => (
+  const [error, setError] = React.useState(false);
+
+  const handleChange = (prop: keyof AuthState) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setAuthData({ ...authData, [prop]: event.target.value });
@@ -45,19 +47,32 @@ function LoginForm() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    authService.login(authData).subscribe({ error: error => alert(error) });
+    authService
+      .login(authData)
+      .subscribe({ error: error => setError(error ? true : false) });
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <EmailField handleChange={handleChange("email")} email={authData.email} />
+      {error ? (
+        <Typography variant="subtitle2" color="error" gutterBottom>
+          Wrong username or email. Please try again.
+        </Typography>
+      ) : null}
+      <EmailField
+        handleChange={handleChange("email")}
+        email={authData.email}
+        error={error}
+      />
       <PasswordField
         handleChange={handleChange("password")}
         password={authData.password}
+        error={error}
       />
       <Button
         type="submit"
         className={classes.button}
+        disabled={!authData.email || !authData.password}
         variant="contained"
         color="primary"
       >

@@ -1,7 +1,14 @@
+/**
+ * Services to manage api requests
+ */
+
 import { Observable } from "rxjs";
 import { ajax, AjaxResponse } from "rxjs/ajax";
 import urljoin from "url-join";
 
+/**
+ * Base for api requests managment
+ */
 class ApiService {
   private apiUrl = "http://localhost:8000/api/";
 
@@ -19,6 +26,9 @@ class ApiService {
   public delete = (url: string): Observable<AjaxResponse> =>
     this.call("DELETE", url);
 
+  /**
+   * Sends request to api
+   */
   private call = (
     method: string,
     url: string,

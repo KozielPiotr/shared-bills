@@ -22,6 +22,7 @@ const useStyles = makeStyles(() =>
 interface FieldProps {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   password: string;
+  error: boolean;
 }
 
 
@@ -42,6 +43,7 @@ function PasswordField(props: FieldProps) {
         className={classes.textField}
         required
         type="password"
+        error={props.error}
         id="outlined-required-password"
         label="password"
         value={props.password}

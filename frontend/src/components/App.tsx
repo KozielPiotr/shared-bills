@@ -1,3 +1,7 @@
+/**
+ * Main application
+ */
+
 import React from "react";
 
 import authService from "../services/auth";

@@ -22,8 +22,8 @@ const useStyles = makeStyles(() =>
 interface FieldProps {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   email: string;
+  error: boolean;
 }
-
 
 /**
  * Text field for email
@@ -41,6 +41,7 @@ function EmailField(props: FieldProps) {
       <TextField
         className={classes.textField}
         required
+        error={props.error}
         id="outlined-required-email"
         label="email"
         value={props.email}
