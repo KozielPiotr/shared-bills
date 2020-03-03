@@ -1,5 +1,5 @@
 /**
- * Field for password to log in
+ * Field for password to rgister
  */
 
 import React from "react";
@@ -33,7 +33,7 @@ function PasswordField(props: PasswordFieldProps) {
         required
         type="password"
         error={props.error}
-        id="outlined-required-password"
+        id={props.id}
         label="password"
         value={props.password}
         placeholder="password"

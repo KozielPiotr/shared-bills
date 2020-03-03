@@ -7,6 +7,7 @@ import React from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
 
+import { AuthState } from "./utils/interfaces";
 import EmailField from "./LoginFormEmail";
 import PasswordField from "./LoginFormPassword";
 
@@ -20,11 +21,6 @@ const useStyles = makeStyles(() =>
     }
   })
 );
-
-interface AuthState {
-  email: string;
-  password: string;
-}
 
 /**
  * Form with user email and password
@@ -56,7 +52,7 @@ function LoginForm() {
     <form onSubmit={handleSubmit}>
       {error ? (
         <Typography variant="subtitle2" color="error" gutterBottom>
-          Wrong username or email. Please try again.
+          Wrong email or password. Please try again.
         </Typography>
       ) : null}
       <EmailField

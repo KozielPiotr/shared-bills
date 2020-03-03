@@ -3,20 +3,21 @@
  */
 
 import React from "react";
-
-import authService from "../services/auth";
-import useObservable from "../hooks/observable";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import MainPage from "./main/Main";
-import LoginPage from "./login/Login";
+import RegisterPage from "./register/Register";
 
 /**
  * Main application function
  */
 function App() {
-  const isAuthenticated = useObservable(authService.isAuthenticated());
-
-  return isAuthenticated ? <MainPage /> : <LoginPage />;
+  return (
+    <Router>
+      <Route exact path="/" component={MainPage} />
+      <Route exact path="/register" component={RegisterPage} />
+    </Router>
+  );
 }
 
 export default App;

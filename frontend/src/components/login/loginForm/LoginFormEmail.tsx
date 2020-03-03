@@ -2,11 +2,12 @@
  * Field for email to log in
  */
 
-import React from "react"
+import React from "react";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Grid, TextField } from "@material-ui/core";
 
+import { EmailFieldProps } from "./utils/interfaces";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -14,30 +15,19 @@ const useStyles = makeStyles(() =>
       paddingTop: "3%"
     },
     textField: {
-      width: "85%",
+      width: "85%"
     }
-  }),
+  })
 );
-
-interface FieldProps {
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  email: string;
-  error: boolean;
-}
 
 /**
  * Text field for email
  */
-function EmailField(props: FieldProps) {
-
-  const classes = useStyles()
+function EmailField(props: EmailFieldProps) {
+  const classes = useStyles();
 
   return (
-    <Grid
-      item
-      xs={12}
-      className={classes.textFieldGrid}
-    >
+    <Grid item xs={12} className={classes.textFieldGrid}>
       <TextField
         className={classes.textField}
         required
@@ -54,4 +44,4 @@ function EmailField(props: FieldProps) {
   );
 }
 
-export default EmailField
+export default EmailField;
