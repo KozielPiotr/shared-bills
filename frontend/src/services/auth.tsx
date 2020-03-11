@@ -15,6 +15,7 @@ class AuthService {
     localStorageService.getToken()
   );
   private registeredUser$ = new BehaviorSubject<string | null>(null);
+  private wantsToLogin$ = new BehaviorSubject<boolean>(true);
 
   constructor() {
     this.tokenSubject$.subscribe(localStorageService.setToken);
@@ -27,8 +28,28 @@ class AuthService {
     return this.tokenSubject$.pipe(map(token => !!token));
   }
 
+  /**
+   * Gets login of recently registered user
+   */
   public justRegistered(): Observable<string | null> {
     return this.registeredUser$.pipe(map(user => user));
+  }
+
+  /**
+   * Sets user's decision to register
+   */
+  public chooseRegister = () => this.wantsToLogin$.next(false);
+
+  /**
+   * Sets user's decision to login
+   */
+  public chooseLogin = () => this.wantsToLogin$.next(true);
+
+  /**
+   * Checks if user wants to login or register
+   */
+  public loginOrRegister(): Observable<boolean> {
+    return this.wantsToLogin$.pipe(map(decision => decision));
   }
 
   /**

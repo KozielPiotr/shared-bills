@@ -1,13 +1,11 @@
 /**
- * Field for password to log in
+ * Field for password to rgister
  */
 
 import React from "react";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Grid, TextField } from "@material-ui/core";
-
-import { PasswordFieldProps } from "./utils/interfaces";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -20,23 +18,37 @@ const useStyles = makeStyles(() =>
   })
 );
 
+interface PasswordFieldProps {
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  id: string;
+  password: string;
+  errors: string[];
+  placeholder: string;
+  label: string;
+}
+
 /**
  * Text field for password
  */
 function PasswordField(props: PasswordFieldProps) {
-  const classes = useStyles();
+  const isError = () => {
+    if (props.errors[0] || props.errors[1]) return true;
+    else return false;
+  };
 
+  const classes = useStyles();
   return (
     <Grid item xs={12} className={classes.textFieldGrid}>
       <TextField
         className={classes.textField}
         required
         type="password"
-        error={props.error}
-        id="outlined-required-password"
-        label="password"
+        error={isError()}
+        helperText={props.errors[0] ? props.errors[0] : props.errors[1]}
+        id={props.id}
+        label={props.label}
         value={props.password}
-        placeholder="password"
+        placeholder={props.placeholder}
         variant="outlined"
         fullWidth
         onChange={props.handleChange}

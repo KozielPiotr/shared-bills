@@ -1,13 +1,11 @@
 /**
- * Field for password to rgister
+ * Field for password to log in
  */
 
 import React from "react";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Grid, TextField } from "@material-ui/core";
-
-import { PasswordFieldProps } from "./utils/interfaces";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,6 +17,12 @@ const useStyles = makeStyles(() =>
     }
   })
 );
+
+interface PasswordFieldProps {
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  password: string;
+  error: boolean;
+}
 
 /**
  * Text field for password
@@ -33,7 +37,7 @@ function PasswordField(props: PasswordFieldProps) {
         required
         type="password"
         error={props.error}
-        id={props.id}
+        id="outlined-required-password"
         label="password"
         value={props.password}
         placeholder="password"

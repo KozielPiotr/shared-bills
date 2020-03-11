@@ -1,14 +1,15 @@
 /**
- * Login page
+ * Registration page
  */
 
 import React from "react";
-import { Link } from "react-router-dom";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { Grid, Paper, Typography } from "@material-ui/core";
+import { Button, Grid, Paper, Typography } from "@material-ui/core";
 
-import LoginForm from "./loginForm/LoginForm";
+import authService from "../../../services/auth";
+
+import RegisterForm from "./registerForm/RegisterForm";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -36,9 +37,9 @@ const useStyles = makeStyles(() =>
 );
 
 /**
- * Main component for login page
+ * Main component for registration page
  */
-function LoginPage() {
+function RegisterPage() {
   const classes = useStyles();
 
   return (
@@ -51,22 +52,25 @@ function LoginPage() {
               gutterBottom
               className={classes.typography}
             >
-              Welcome to Shared-bills app!
+              Register new user
             </Typography>
           </Grid>
-          <LoginForm />
+          <RegisterForm />
           <Typography
             variant="subtitle2"
             gutterBottom
             className={classes.typography}
           >
-            Don't have an account?
-            <Link to="/register"> Create one!</Link>
+            Already have an account?
+            <Button onClick={authService.chooseLogin} color="primary">
+              Log in
+            </Button>
           </Typography>
         </Paper>
+        <Grid item xs={12}></Grid>
       </Grid>
     </Grid>
   );
 }
 
-export default LoginPage;
+export default RegisterPage;

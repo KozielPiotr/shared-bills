@@ -1,16 +1,15 @@
 /**
- * Registration page
+ * Login page
  */
 
 import React from "react";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { Grid, Paper, Typography } from "@material-ui/core";
+import { Button, Grid, Paper, Typography } from "@material-ui/core";
 
-import authService from "../../services/auth";
-import useObservable from "../../hooks/observable";
+import authService from "../../../services/auth";
 
-import RegisterForm from "./registerForm/RegisterForm";
+import LoginForm from "./loginForm/LoginForm";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -38,11 +37,10 @@ const useStyles = makeStyles(() =>
 );
 
 /**
- * Main component for registration page
+ * Main component for login page
  */
-function RegisterPage() {
+function LoginPage() {
   const classes = useStyles();
-  useObservable(authService.isAuthenticated()) && authService.logout();
 
   return (
     <Grid container className={classes.grid} spacing={0} direction="column">
@@ -54,15 +52,24 @@ function RegisterPage() {
               gutterBottom
               className={classes.typography}
             >
-              Register new user
+              Welcome to Shared-bills app!
             </Typography>
           </Grid>
-          <RegisterForm />
+          <LoginForm />
+          <Typography
+            variant="subtitle2"
+            gutterBottom
+            className={classes.typography}
+          >
+            Don't have an account?
+            <Button onClick={authService.chooseRegister} color="primary">
+              Create one!
+            </Button>
+          </Typography>
         </Paper>
-        <Grid item xs={12}></Grid>
       </Grid>
     </Grid>
   );
 }
 
-export default RegisterPage;
+export default LoginPage;

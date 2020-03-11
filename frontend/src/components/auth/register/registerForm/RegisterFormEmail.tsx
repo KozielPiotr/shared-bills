@@ -7,8 +7,6 @@ import React from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Grid, TextField } from "@material-ui/core";
 
-import { EmailFieldProps } from "./utils/interfaces";
-
 const useStyles = makeStyles(() =>
   createStyles({
     textFieldGrid: {
@@ -19,6 +17,12 @@ const useStyles = makeStyles(() =>
     }
   })
 );
+
+interface EmailFieldProps {
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  email: string;
+  error: string;
+}
 
 /**
  * Text field for email
@@ -31,7 +35,8 @@ function EmailField(props: EmailFieldProps) {
       <TextField
         className={classes.textField}
         required
-        error={props.error}
+        error={!!props.error}
+        helperText={props.error}
         id="outlined-required-email"
         label="email"
         value={props.email}

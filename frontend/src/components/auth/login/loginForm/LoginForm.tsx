@@ -7,11 +7,10 @@ import React from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
 
-import { AuthState } from "./utils/interfaces";
 import EmailField from "./LoginFormEmail";
 import PasswordField from "./LoginFormPassword";
 
-import authService from "../../../services/auth";
+import authService from "../../../../services/auth";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -21,6 +20,11 @@ const useStyles = makeStyles(() =>
     }
   })
 );
+
+interface AuthState {
+  email: string;
+  password: string;
+}
 
 /**
  * Form with user email and password

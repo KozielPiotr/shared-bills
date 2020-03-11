@@ -7,8 +7,6 @@ import React from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Grid, TextField } from "@material-ui/core";
 
-import { EmailFieldProps } from "./utils/interfaces";
-
 const useStyles = makeStyles(() =>
   createStyles({
     textFieldGrid: {
@@ -19,6 +17,12 @@ const useStyles = makeStyles(() =>
     }
   })
 );
+
+interface EmailFieldProps {
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  email: string;
+  error: boolean;
+}
 
 /**
  * Text field for email

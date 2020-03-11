@@ -1,19 +1,24 @@
 import React from "react";
 
+import { AjaxError } from "rxjs/ajax";
+
 import { Typography } from "@material-ui/core";
 
 /**
  * Error message if register form is filled incorrectly or api returned error
  */
-export default function RegisterError() {
+
+interface ErrorFieldProps {
+  error: AjaxError;
+}
+
+/**
+ * Renders Ajax response errors
+ */
+export default function RegisterError(props: ErrorFieldProps) {
   return (
     <Typography variant="subtitle2" color="error" gutterBottom>
-      Wrong email or password.
-      <br />
-      Email has to be in right email format.
-      <br />
-      Password must be at least 8 characters long.
-      <br />
+      {props.error.response.email && "email already registered"}
     </Typography>
   );
 }
