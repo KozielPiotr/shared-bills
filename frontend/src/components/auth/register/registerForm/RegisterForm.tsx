@@ -28,7 +28,6 @@ interface RegisterState {
   email: string;
   password: string;
   password2: string;
-  passwordsComparison: string;
 }
 
 /**
@@ -38,8 +37,7 @@ function RegisterForm() {
   const registerInitialState = {
     email: "",
     password: "",
-    password2: "",
-    passwordsComparison: ""
+    password2: ""
   };
 
   const [registerData, setRegisterData] = React.useState<RegisterState>(
@@ -51,62 +49,39 @@ function RegisterForm() {
   const [error, setError] = React.useState();
   const registeredUser = useObservable(authService.justRegistered());
 
-  /**
-   * Checks if email has correct format
-   *
-   * @param { string } input Email entered by user
-   */
-  const validateEmail = (input: string) => {
+  React.useEffect(() => {
+    setRegisterErrors({
+      email: validateEmail(),
+      password: validatePassword(),
+      password2: validatePassword2()
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [registerData]);
+
+  const validateEmail = () => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(input).toLowerCase()) ? "" : "Wrong email format.";
+    return !registerData.email ||
+      re.test(String(registerData.email).toLowerCase())
+      ? ""
+      : "Wrong email format.";
   };
 
-  /**
-   * Checks if password has correct length and if repeated password is identical as password
-   *
-   * @param { string } input Password entered by user
-   */
-  const validatePassword = (input: string) => {
-    if (input.length >= 8) return "";
-    else {
-      console.log("too short");
-      return "Password must be at least 8 characters long.";
-    }
-  };
+  const validatePassword = () =>
+    !registerData.password || registerData.password.length >= 8
+      ? ""
+      : "Password must be at least 8 characters long.";
 
-  /**
-   * Checks if repeated password is identical as password
-   *
-   * @param { string} field password or repeated password input field
-   * @param { string } input Password entered by user
-   */
-  const assertPasswords = (field: string, input: string) => {
-    if (field === "password") {
-      if (input === registerData.password2) return "";
-      else return "Passwords must be identical.";
-    } else if (field === "password2") {
-      if (input === registerData.password) return "";
-      else return "Passwords must be identical.";
-    } else return "";
-  };
+  const validatePassword2 = () =>
+    !registerData.password ||
+    !registerData.password2 ||
+    registerData.password === registerData.password2
+      ? ""
+      : "Passwords must be identical.";
 
   const handleChange = (field: keyof RegisterState) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRegisterData({ ...registerData, [field]: event.target.value });
-    if (field === "email") {
-      setRegisterErrors({
-        ...registerErrors,
-        [field]: validateEmail(event.target.value)
-      });
-    } else {
-      console.log("A", field);
-      setRegisterErrors({
-        ...registerErrors,
-        [field]: validatePassword(event.target.value),
-        passwordsComparison: assertPasswords(field, event.target.value)
-      });
-    }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -133,7 +108,7 @@ function RegisterForm() {
         id="password"
         handleChange={handleChange("password")}
         password={registerData.password}
-        errors={[registerErrors.password2, registerErrors.passwordsComparison]}
+        errors={[registerErrors.password]}
         placeholder="password"
         label="password"
       />
@@ -141,7 +116,7 @@ function RegisterForm() {
         id="password2"
         handleChange={handleChange("password2")}
         password={registerData.password2}
-        errors={[registerErrors.password2, registerErrors.passwordsComparison]}
+        errors={[registerErrors.password2]}
         placeholder="repeat password"
         label="repeat password"
       />
@@ -154,8 +129,7 @@ function RegisterForm() {
           !registerData.password2 ||
           !!registerErrors.email ||
           !!registerErrors.password ||
-          !!registerErrors.password2 ||
-          !!registerErrors.passwordsComparison
+          !!registerErrors.password2
         }
         variant="contained"
         color="primary"

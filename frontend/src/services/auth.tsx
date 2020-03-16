@@ -32,7 +32,7 @@ class AuthService {
    * Gets login of recently registered user
    */
   public justRegistered(): Observable<string | null> {
-    return this.registeredUser$.pipe(map(user => user));
+    return this.registeredUser$;
   }
 
   /**
@@ -49,7 +49,7 @@ class AuthService {
    * Checks if user wants to login or register
    */
   public loginOrRegister(): Observable<boolean> {
-    return this.wantsToLogin$.pipe(map(decision => decision));
+    return this.wantsToLogin$;
   }
 
   /**
