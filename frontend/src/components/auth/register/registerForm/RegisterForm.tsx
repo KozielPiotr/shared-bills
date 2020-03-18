@@ -58,6 +58,9 @@ function RegisterForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [registerData]);
 
+  /**
+   * Checks if email is in proper format
+   */
   const validateEmail = () => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return !registerData.email ||
@@ -66,11 +69,17 @@ function RegisterForm() {
       : "Wrong email format.";
   };
 
+  /**
+   * Checks if password has proper length
+   */
   const validatePassword = () =>
     !registerData.password || registerData.password.length >= 8
       ? ""
       : "Password must be at least 8 characters long.";
 
+  /**
+   * Checks if passwords are identical
+   */
   const validatePassword2 = () =>
     !registerData.password ||
     !registerData.password2 ||

@@ -7,6 +7,11 @@ import { map, tap } from "rxjs/operators";
 import apiService from "./api";
 import { localStorageService } from "./storage";
 
+export enum AuthStage {
+  Login,
+  Register
+}
+
 /**
  * Manages authentication
  */
@@ -15,7 +20,7 @@ class AuthService {
     localStorageService.getToken()
   );
   private registeredUser$ = new BehaviorSubject<string | null>(null);
-  private wantsToLogin$ = new BehaviorSubject<boolean>(true);
+  private authStage$ = new BehaviorSubject<AuthStage>(AuthStage.Login);
 
   constructor() {
     this.tokenSubject$.subscribe(localStorageService.setToken);
@@ -38,18 +43,18 @@ class AuthService {
   /**
    * Sets user's decision to register
    */
-  public chooseRegister = () => this.wantsToLogin$.next(false);
+  public chooseRegister = () => this.authStage$.next(AuthStage.Register);
 
   /**
    * Sets user's decision to login
    */
-  public chooseLogin = () => this.wantsToLogin$.next(true);
+  public chooseLogin = () => this.authStage$.next(AuthStage.Login);
 
   /**
    * Checks if user wants to login or register
    */
-  public loginOrRegister(): Observable<boolean> {
-    return this.wantsToLogin$;
+  public authAction(): BehaviorSubject<AuthStage> {
+    return this.authStage$;
   }
 
   /**
