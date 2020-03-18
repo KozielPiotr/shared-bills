@@ -3,7 +3,7 @@ import React from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { Button, Modal, Typography } from "@material-ui/core";
 
-import authService from "../../../../services/auth";
+import authService, { AuthStage } from "../../../../services/auth";
 
 interface SuccessProps {
   registeredUser: string;
@@ -45,7 +45,7 @@ export default function RegisterSuccess(props: SuccessProps) {
         <Typography variant="h5" gutterBottom color="textSecondary">
           {props.registeredUser} registered.{" "}
           <Button
-            onClick={authService.chooseLogin}
+            onClick={() => authService.setAuthAction(AuthStage.Login)}
             color="primary"
             variant="contained"
           >

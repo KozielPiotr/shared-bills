@@ -7,7 +7,7 @@ import React from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Button, Grid, Paper, Typography } from "@material-ui/core";
 
-import authService from "../../../services/auth";
+import authService, { AuthStage } from "../../../services/auth";
 
 import LoginForm from "./loginForm/LoginForm";
 
@@ -62,7 +62,10 @@ function LoginPage() {
             className={classes.typography}
           >
             Don't have an account?
-            <Button onClick={authService.chooseRegister} color="primary">
+            <Button
+              onClick={() => authService.setAuthAction(AuthStage.Register)}
+              color="primary"
+            >
               Create one!
             </Button>
           </Typography>

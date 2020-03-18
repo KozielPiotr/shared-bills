@@ -41,21 +41,18 @@ class AuthService {
   }
 
   /**
-   * Sets user's decision to register
-   */
-  public chooseRegister = () => this.authStage$.next(AuthStage.Register);
-
-  /**
-   * Sets user's decision to login
-   */
-  public chooseLogin = () => this.authStage$.next(AuthStage.Login);
-
-  /**
    * Checks if user wants to login or register
    */
   public authAction(): BehaviorSubject<AuthStage> {
     return this.authStage$;
   }
+
+  /**
+   * Checks what auth action user wants to perform
+   */
+  public setAuthAction = (action: AuthStage) => {
+    this.authStage$.next(action);
+  };
 
   /**
    * Logs user in

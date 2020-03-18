@@ -16,14 +16,6 @@ import RegisterPage from "./register/Register";
 function AuthPage() {
   const authDecision = useObservable(authService.authAction());
 
-  // if (authDecision === AuthStage.Login) {
-  //   return <LoginPage />;
-  // } else if (authDecision === AuthStage.Register) {
-  //   return <RegisterPage />;
-  // } else {
-  //   return <LoginPage />;
-  // }
-
   switch (authDecision) {
     case AuthStage.Login:
       return <LoginPage />;
