@@ -10,7 +10,7 @@ import { Button, Typography } from "@material-ui/core";
 import EmailField from "./LoginFormEmail";
 import PasswordField from "./LoginFormPassword";
 
-import authService from "../../../services/auth";
+import authService from "../../../../services/auth";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -56,7 +56,7 @@ function LoginForm() {
     <form onSubmit={handleSubmit}>
       {error ? (
         <Typography variant="subtitle2" color="error" gutterBottom>
-          Wrong username or email. Please try again.
+          Wrong email or password. Please try again.
         </Typography>
       ) : null}
       <EmailField

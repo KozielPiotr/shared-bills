@@ -1,12 +1,11 @@
 /**
- * Field for password to log in
+ * Field for email to register
  */
 
-import React from "react"
+import React from "react";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Grid, TextField } from "@material-ui/core";
-
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -14,40 +13,34 @@ const useStyles = makeStyles(() =>
       paddingTop: "3%"
     },
     textField: {
-      width: "85%",
+      width: "85%"
     }
-  }),
+  })
 );
 
-interface FieldProps {
+interface EmailFieldProps {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  password: string;
-  error: boolean;
+  email: string;
+  error: string;
 }
 
-
 /**
- * Text field for password
+ * Text field for email
  */
-function PasswordField(props: FieldProps) {
-
-  const classes = useStyles()
+function EmailField(props: EmailFieldProps) {
+  const classes = useStyles();
 
   return (
-    <Grid
-      item
-      xs={12}
-      className={classes.textFieldGrid}
-    >
+    <Grid item xs={12} className={classes.textFieldGrid}>
       <TextField
         className={classes.textField}
         required
-        type="password"
-        error={props.error}
-        id="outlined-required-password"
-        label="password"
-        value={props.password}
-        placeholder="password"
+        error={!!props.error}
+        helperText={props.error}
+        id="outlined-required-email"
+        label="email"
+        value={props.email}
+        placeholder="example@email.com"
         variant="outlined"
         fullWidth
         onChange={props.handleChange}
@@ -56,4 +49,4 @@ function PasswordField(props: FieldProps) {
   );
 }
 
-export default PasswordField
+export default EmailField;

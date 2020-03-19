@@ -7,7 +7,7 @@ import { Observable } from "rxjs";
  *
  * @param {Observable} observable - Observable used to change state
  */
-function useObservable(observable: Observable<boolean>) {
+function useObservable<T>(observable: Observable<T>) {
   const [state, setState] = React.useState();
 
   React.useEffect(() => {

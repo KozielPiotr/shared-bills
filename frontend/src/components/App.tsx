@@ -8,7 +8,7 @@ import authService from "../services/auth";
 import useObservable from "../hooks/observable";
 
 import MainPage from "./main/Main";
-import LoginPage from "./login/Login";
+import AuthPage from "./auth/Auth";
 
 /**
  * Main application function
@@ -16,7 +16,7 @@ import LoginPage from "./login/Login";
 function App() {
   const isAuthenticated = useObservable(authService.isAuthenticated());
 
-  return isAuthenticated ? <MainPage /> : <LoginPage />;
+  return isAuthenticated ? <MainPage /> : <AuthPage />;
 }
 
 export default App;
