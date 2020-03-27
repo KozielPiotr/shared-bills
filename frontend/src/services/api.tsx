@@ -40,7 +40,7 @@ class ApiService {
       url: urljoin(this.apiUrl, url),
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorageService.getToken()
+        Authorization: `Bearer ${localStorageService.getToken()}`
       },
       body
     });

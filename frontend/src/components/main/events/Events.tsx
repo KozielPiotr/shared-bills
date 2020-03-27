@@ -9,15 +9,15 @@ import eventService from "../../../services/events";
  * List of events for main page
  */
 function Events() {
-  const events = useObservable(eventService.events());
-  const handleClick = () => eventService.getEvents();
+  React.useEffect(eventService.fetchEvents, []);
+  const events = useObservable(eventService.events);
 
   console.log(events);
   return (
     <div>
       <h1>events placeholder</h1>
-      <Button onClick={handleClick}>events</Button>
-      {/* <p>{events}</p> */}
+      <Button onClick={eventService.fetchEvents}>events</Button>
+      {events && events.length > 0 ? events.map((event: { id: React.ReactNode; }) => <p>{event.id}</p>) : <p>no events</p>}
     </div>
   );
 }
