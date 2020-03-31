@@ -5,6 +5,7 @@
 import { Observable } from "rxjs";
 import { ajax, AjaxResponse } from "rxjs/ajax";
 import urljoin from "url-join";
+import { localStorageService } from "./storage";
 
 /**
  * Base for api requests managment
@@ -37,7 +38,10 @@ class ApiService {
     ajax({
       method,
       url: urljoin(this.apiUrl, url),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorageService.getToken()}`
+      },
       body
     });
 }

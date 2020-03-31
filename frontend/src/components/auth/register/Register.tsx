@@ -18,7 +18,6 @@ const useStyles = makeStyles(() =>
       justifyContent: "center",
       alignContent: "center",
       flexWrap: "nowrap",
-      backgroundColor: "#f5f5f5",
       paddingLeft: "15%",
       paddingRight: "15%"
     },
