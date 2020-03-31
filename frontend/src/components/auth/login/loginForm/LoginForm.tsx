@@ -4,22 +4,12 @@
 
 import React from "react";
 
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
 
+import authService from "../../../../services/auth";
+import useStyles from "./styles";
 import EmailField from "./LoginFormEmail";
 import PasswordField from "./LoginFormPassword";
-
-import authService from "../../../../services/auth";
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    button: {
-      marginTop: "3%",
-      width: "85%"
-    }
-  })
-);
 
 interface AuthState {
   email: string;

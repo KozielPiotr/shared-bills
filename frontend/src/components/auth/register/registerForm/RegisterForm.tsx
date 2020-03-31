@@ -4,25 +4,15 @@
 
 import React from "react";
 
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 
 import useObservable from "../../../../hooks/observable";
+import authService from "../../../../services/auth";
+import useStyles from "./styles";
 import RegisterError from "./RegisterError";
 import RegisterSuccess from "./RegisterSuccess";
 import EmailField from "./RegisterFormEmail";
 import PasswordField from "./RegisterFormPassword";
-
-import authService from "../../../../services/auth";
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    button: {
-      marginTop: "3%",
-      width: "85%"
-    }
-  })
-);
 
 interface RegisterState {
   email: string;
