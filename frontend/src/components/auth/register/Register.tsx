@@ -4,36 +4,11 @@
 
 import React from "react";
 
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Button, Grid, Paper, Typography } from "@material-ui/core";
 
 import authService, { AuthStage } from "../../../services/auth";
-
+import useStyles from "./styles";
 import RegisterForm from "./registerForm/RegisterForm";
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    grid: {
-      textAlign: "center",
-      justifyContent: "center",
-      alignContent: "center",
-      flexWrap: "nowrap",
-      paddingLeft: "15%",
-      paddingRight: "15%"
-    },
-    paper: {
-      margin: 0,
-      paddingTop: "3%",
-      paddingBottom: "3%",
-      marginLeft: "25%",
-      marginRight: "25%"
-    },
-    typography: {
-      padding: "1%",
-      textAlign: "center"
-    }
-  })
-);
 
 /**
  * Main component for registration page

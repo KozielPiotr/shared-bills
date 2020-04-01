@@ -4,19 +4,9 @@
 
 import React from "react";
 
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Grid, TextField } from "@material-ui/core";
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    textFieldGrid: {
-      paddingTop: "3%"
-    },
-    textField: {
-      width: "85%"
-    }
-  })
-);
+import useStyles from "./styles";
 
 interface EmailFieldProps {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
