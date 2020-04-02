@@ -5,12 +5,13 @@ Id fields left to facilitate frontend work.
 """
 
 from rest_framework.serializers import (
+    HiddenField,
     HyperlinkedIdentityField,
     ModelSerializer,
-    HiddenField,
     PrimaryKeyRelatedField,
 )
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
+
 from .models import Bill, Event, Participant, Payment
 
 
@@ -62,7 +63,7 @@ class BillSerializer(EventResourceSerializer):
     url = NestedHyperlinkedIdentityField(
         view_name="bills-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
     )
-    participants = ParticipantField(many=True)
+    participants = ParticipantField(many=True, validators=[])
 
     class Meta:
         model = Bill
