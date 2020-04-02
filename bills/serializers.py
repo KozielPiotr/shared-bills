@@ -4,13 +4,15 @@ Serializers for bills application.
 Id fields left to facilitate frontend work.
 """
 
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
+    HiddenField,
     HyperlinkedIdentityField,
     ModelSerializer,
-    HiddenField,
     PrimaryKeyRelatedField,
 )
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
+
 from .models import Bill, Event, Participant, Payment
 
 
@@ -43,6 +45,20 @@ class ParticipantSerializer(EventResourceSerializer):
         model = Participant
         fields = "__all__"
 
+    def create(self, validated_data):
+        participants = validated_data["event"].participants.all()
+        names = [participant.username for participant in participants]
+        if validated_data["username"] in names:
+            raise ValidationError(
+                "UNIQUE ERROR: participants names have to be unique within the event."
+                "Participant with '{}' name already exist.".format(
+                    validated_data["username"]
+                )
+            )
+
+        participant = Participant.objects.create(**validated_data)
+        return participant
+
 
 class ParticipantNestedSerializer(ModelSerializer):
     """Serializer for fully nested Participant object."""
@@ -62,7 +78,7 @@ class BillSerializer(EventResourceSerializer):
     url = NestedHyperlinkedIdentityField(
         view_name="bills-detail", parent_lookup_kwargs={"event_pk": "event__pk"}
     )
-    participants = ParticipantField(many=True)
+    participants = ParticipantField(many=True, validators=[])
 
     class Meta:
         model = Bill
@@ -136,6 +152,7 @@ class EventSerializer(ModelSerializer):
         self.fields["user"].default = self.context["request"].user
 
     def create(self, validated_data):
+        print(validated_data)
         paymaster_data = None
         if "paymaster" in validated_data:
             paymaster_data = validated_data.pop("paymaster")

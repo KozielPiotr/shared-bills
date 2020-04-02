@@ -1,8 +1,8 @@
 # pylint: disable=too-few-public-methods
 """Models for bills application."""
 
-from djmoney.models.fields import MoneyField
 from django.db import models
+from djmoney.models.fields import MoneyField
 
 from accounts.models import User
 
@@ -10,7 +10,6 @@ from accounts.models import User
 class Participant(models.Model):
     """Model for event's participants."""
 
-    username = models.CharField(max_length=100, unique=True)
     event = models.ForeignKey(
         "Event",
         null=True,
@@ -18,6 +17,7 @@ class Participant(models.Model):
         on_delete=models.CASCADE,
         related_name="participants",
     )
+    username = models.CharField(max_length=100)
 
     def __str__(self):
         return self.username
