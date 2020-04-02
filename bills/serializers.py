@@ -137,7 +137,6 @@ class EventSerializer(ModelSerializer):
         self.fields["user"].default = self.context["request"].user
 
     def create(self, validated_data):
-        print(validated_data)
         paymaster_data = None
         if "paymaster" in validated_data:
             paymaster_data = validated_data.pop("paymaster")
