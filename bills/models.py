@@ -1,4 +1,4 @@
-# pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods,missing-class-docstring
 """Models for bills application."""
 
 from django.db import models
