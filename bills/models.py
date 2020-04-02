@@ -19,6 +19,9 @@ class Participant(models.Model):
     )
     username = models.CharField(max_length=100)
 
+    class Meta:
+        unique_together = [["event", "username"]]
+
     def __str__(self):
         return self.username
 

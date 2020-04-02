@@ -45,20 +45,6 @@ class ParticipantSerializer(EventResourceSerializer):
         model = Participant
         fields = "__all__"
 
-    def create(self, validated_data):
-        participants = validated_data["event"].participants.all()
-        names = [participant.username for participant in participants]
-        if validated_data["username"] in names:
-            raise ValidationError(
-                "UNIQUE ERROR: participants names have to be unique within the event."
-                "Participant with '{}' name already exist.".format(
-                    validated_data["username"]
-                )
-            )
-
-        participant = Participant.objects.create(**validated_data)
-        return participant
-
 
 class ParticipantNestedSerializer(ModelSerializer):
     """Serializer for fully nested Participant object."""
