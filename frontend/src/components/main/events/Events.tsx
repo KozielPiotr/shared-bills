@@ -37,22 +37,11 @@ function Events() {
   const events = useObservable(eventService.events$);
 
   const [openAddEvent, setOpenAddEvent] = React.useState(false);
-  const [openConfirmation, setOpenConfirmation] = React.useState(false);
 
   const handleOpenAddEvent = () => {
     setOpenAddEvent(true);
   };
   const handleCloseAddEvent = () => {
-    setOpenAddEvent(false);
-  };
-  const handleOpenConfirmation = () => {
-    setOpenConfirmation(true);
-  };
-  const handleCloseConfirmation = () => {
-    setOpenConfirmation(false);
-  };
-  const handleConfirmAbort = () => {
-    setOpenConfirmation(false);
     setOpenAddEvent(false);
   };
 
@@ -78,14 +67,7 @@ function Events() {
           <p>no events</p>
         )}
       </GridList>
-      <AddEvent
-        open={openAddEvent}
-        handleCloseAddEvent={handleCloseAddEvent}
-        handleOpenConfirmation={handleOpenConfirmation}
-        handleCloseConfirmation={handleCloseConfirmation}
-        openConfirmation={openConfirmation}
-        handleConfirmAbort={handleConfirmAbort}
-      />
+      <AddEvent open={openAddEvent} handleCloseAddEvent={handleCloseAddEvent} />
     </div>
   );
 }

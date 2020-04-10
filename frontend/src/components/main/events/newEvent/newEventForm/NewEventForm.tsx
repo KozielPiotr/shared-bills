@@ -14,7 +14,6 @@ import OwnerField from "./NewEventFormOwner";
 import eventService from "../../../../../services/events";
 
 interface NewEventFormProps {
-  handleOpenConfirmation: () => void;
   handleCloseAddEvent: () => void;
 }
 
@@ -47,13 +46,10 @@ function NewEventForm(props: NewEventFormProps) {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    eventService.createEvent(newEventData).subscribe({
-      error: error => {
-        setError(error ? true : false);
-      }
-    });
-    props.handleCloseAddEvent();
-    eventService.fetchEvents();
+    eventService.createEvent(newEventData).subscribe(
+      () => props.handleCloseAddEvent(),
+      error => setError(true)
+    );
   };
 
   return (
@@ -93,7 +89,7 @@ function NewEventForm(props: NewEventFormProps) {
               Confirm
             </Button>
             <Button
-              onClick={props.handleOpenConfirmation}
+              onClick={props.handleCloseAddEvent}
               variant="contained"
               color="secondary"
             >

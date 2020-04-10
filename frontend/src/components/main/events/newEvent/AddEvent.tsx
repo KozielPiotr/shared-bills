@@ -9,15 +9,10 @@ import Typography from "@material-ui/core/Typography";
 
 import useStyles from "./styles";
 import NewEventForm from "./newEventForm/NewEventForm";
-import AbortConfirm from "./abortConfirm/AbortConfirm";
 
 interface AddEventProps {
   open: boolean;
   handleCloseAddEvent: () => void;
-  handleOpenConfirmation: () => void;
-  handleCloseConfirmation: () => void;
-  handleConfirmAbort: () => void;
-  openConfirmation: boolean;
 }
 
 /**
@@ -39,17 +34,9 @@ function AddEvent(props: AddEventProps) {
             New event
           </Typography>
           <hr />
-          <NewEventForm
-            handleOpenConfirmation={props.handleOpenConfirmation}
-            handleCloseAddEvent={props.handleCloseAddEvent}
-          />
+          <NewEventForm handleCloseAddEvent={props.handleCloseAddEvent} />
         </div>
       </Modal>
-      <AbortConfirm
-        openConfirmation={props.openConfirmation}
-        handleCloseConfirmation={props.handleCloseConfirmation}
-        handleConfirmAbort={props.handleConfirmAbort}
-      />
     </div>
   );
 }
