@@ -2,19 +2,39 @@
  * Events services
  */
 
-import { BehaviorSubject } from "rxjs";
-import { map } from "rxjs/operators";
+import { BehaviorSubject, Observable } from "rxjs";
+import { map, tap } from "rxjs/operators";
 
 import apiService from "./api";
 
+/**
+ * Manages events
+ */
 class EventService {
-  public events = new BehaviorSubject<any[]>([]);
+  public events$ = new BehaviorSubject<any[]>([]);
 
   public fetchEvents = () => {
     apiService
       .get("/events/")
       .pipe(map(ajax => ajax.response))
-      .subscribe(events => this.events.next(events));
+      .subscribe(events => this.events$.next(events));
+  };
+
+  public createEvent = (eventData: {
+    eventName: string;
+    owner: string;
+  }): Observable<any> => {
+    return apiService
+      .post("/events/", {
+        name: eventData.eventName,
+        paymaster: { username: eventData.owner }
+      })
+      .pipe(
+        map(ajax => ajax.response),
+        tap((event: any) =>
+          this.events$.next([...this.events$.getValue(), event])
+        )
+      );
   };
 }
 

@@ -12,6 +12,7 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import useObservable from "../../../hooks/observable";
 import eventService from "../../../services/events";
 import EventCard from "./eventCard/EventCard";
+import AddEvent from "./newEvent/AddEvent";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,14 +32,25 @@ const useStyles = makeStyles((theme: Theme) =>
  */
 function Events() {
   React.useEffect(eventService.fetchEvents, []);
+
   const classes = useStyles();
-  const events = useObservable(eventService.events);
+  const events = useObservable(eventService.events$);
+
+  const [openAddEvent, setOpenAddEvent] = React.useState(false);
+
+  const handleOpenAddEvent = () => {
+    setOpenAddEvent(true);
+  };
+  const handleCloseAddEvent = () => {
+    setOpenAddEvent(false);
+  };
 
   return (
     <div>
       <div className={classes.title}>
         Events
         <Button
+          onClick={handleOpenAddEvent}
           variant="outlined"
           color="primary"
           className={classes.button}
@@ -55,6 +67,7 @@ function Events() {
           <p>no events</p>
         )}
       </GridList>
+      <AddEvent open={openAddEvent} handleCloseAddEvent={handleCloseAddEvent} />
     </div>
   );
 }
