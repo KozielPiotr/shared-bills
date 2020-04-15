@@ -12,12 +12,15 @@ import apiService from "./api";
  */
 class EventService {
   public events$ = new BehaviorSubject<any[]>([]);
+  public eventsLoading$ = new BehaviorSubject<boolean>(false);
 
   public fetchEvents = () => {
+    this.eventsLoading$.next(true);
     apiService
       .get("/events/")
       .pipe(map(ajax => ajax.response))
       .subscribe(events => this.events$.next(events));
+    this.eventsLoading$.next(false);
   };
 
   public createEvent = (eventData: {
