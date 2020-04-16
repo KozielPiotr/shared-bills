@@ -19,8 +19,10 @@ class EventService {
     apiService
       .get("/events/")
       .pipe(map(ajax => ajax.response))
-      .subscribe(events => this.events$.next(events));
-    this.eventsLoading$.next(false);
+      .subscribe(events => {
+        this.events$.next(events);
+        this.eventsLoading$.next(false);
+      });
   };
 
   public createEvent = (eventData: {

@@ -33,7 +33,6 @@ function Events() {
   const handleCloseAddEvent = () => {
     setOpenAddEvent(false);
   };
-  console.log(loading);
 
   return (
     <div>
