@@ -4,28 +4,16 @@
 
 import React from "react";
 
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import GridList from "@material-ui/core/GridList";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
+import useStyles from "./styles";
 import useObservable from "../../../hooks/observable";
 import eventService from "../../../services/events";
 import EventCard from "./eventCard/EventCard";
 import AddEvent from "./newEvent/AddEvent";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: {
-      textAlign: "left",
-      marginTop: "2%",
-      marginBottom: "1%"
-    },
-    button: {
-      margin: theme.spacing(1)
-    }
-  })
-);
 
 /**
  * List of events for main page
@@ -35,6 +23,7 @@ function Events() {
 
   const classes = useStyles();
   const events = useObservable(eventService.events$);
+  const loading = useObservable(eventService.eventsLoading$);
 
   const [openAddEvent, setOpenAddEvent] = React.useState(false);
 
@@ -60,6 +49,7 @@ function Events() {
         </Button>
       </div>
       <hr />
+      {loading ? <LinearProgress /> : null}
       <GridList cellHeight={180}>
         {events && events.length > 0 ? (
           events.map((event: any) => <EventCard key={event.id} event={event} />)
