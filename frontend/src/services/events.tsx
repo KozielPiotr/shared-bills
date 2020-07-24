@@ -5,15 +5,23 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { map, tap } from "rxjs/operators";
 
-import apiService from "./api";
+import apiService, { ApiServiceExact } from "./api";
+import { EventInterface } from "../interfaces/interfaces";
 
 /**
  * Manages events
  */
 class EventService {
-  public events$ = new BehaviorSubject<any[]>([]);
+  public events$ = new BehaviorSubject<EventInterface[]>([]);
+  public eventUrl$ = new BehaviorSubject<string | null>(null);
+  public event$ = new BehaviorSubject<EventInterface | null>(null);
   public eventsLoading$ = new BehaviorSubject<boolean>(false);
 
+  private apiServiceExact = new ApiServiceExact();
+
+  /**
+   * Gets all logged user's events
+   */
   public fetchEvents = () => {
     this.eventsLoading$.next(true);
     apiService
@@ -25,10 +33,41 @@ class EventService {
       });
   };
 
+  /**
+   * Gets a specific event by url
+   */
+  public fetchEvent = (url: string) => {
+    this.apiServiceExact
+      .get(url)
+      .pipe(map(ajax => ajax.response))
+      .subscribe(event => {
+        this.event$.next(event);
+      });
+  };
+
+  /**
+   * Gets a specific event by it's ID
+   */
+  public fetchEventById = (id: string | undefined) => {
+    let eventId = id;
+    if (!eventId) {
+      eventId = "";
+    }
+    apiService
+      .get(`/events/${id}/`)
+      .pipe(map(ajax => ajax.response))
+      .subscribe(event => {
+        this.event$.next(event);
+      });
+  };
+
+  /**
+   * Creates a new event
+   */
   public createEvent = (eventData: {
     eventName: string;
     owner: string;
-  }): Observable<any> => {
+  }): Observable<EventInterface> => {
     return apiService
       .post("/events/", {
         name: eventData.eventName,
@@ -36,7 +75,7 @@ class EventService {
       })
       .pipe(
         map(ajax => ajax.response),
-        tap((event: any) =>
+        tap((event: EventInterface) =>
           this.events$.next([...this.events$.getValue(), event])
         )
       );

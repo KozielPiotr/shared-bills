@@ -1,8 +1,9 @@
 /**
- * Card with details of the event
+ * Card with name of the event
  */
 
 import React from "react";
+import { Link } from "react-router-dom";
 
 import IconButton from "@material-ui/core/IconButton";
 import Card from "@material-ui/core/Card";
@@ -15,6 +16,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 import useStyles from "./styles";
 import eventImg from "./event.jpg";
+import { localStorageService } from "../../../../services/storage";
 
 interface EventCardProps {
   key: number;
@@ -34,10 +36,14 @@ interface EventCardProps {
 }
 
 /**
- * Card with event details
+ * Card with event name
  */
 function EventCard(props: EventCardProps) {
   const classes = useStyles();
+
+  const handleClick = () => {
+    localStorageService.setEventUrl(props.event.url);
+  };
 
   return (
     <Card className={classes.root}>
@@ -47,8 +53,10 @@ function EventCard(props: EventCardProps) {
         }
         title={props.event.name}
         action={
-          <IconButton aria-label="settings">
-            <ChevronRightIcon />
+          <IconButton aria-label="settings" onClick={handleClick}>
+            <Link to={`/event/${props.event.id}`}>
+              <ChevronRightIcon />
+            </Link>
           </IconButton>
         }
       />

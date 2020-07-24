@@ -1,5 +1,5 @@
 /**
- * Styles for NewEventForm components
+ * Styles for NewParticipantForm components
  */
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";

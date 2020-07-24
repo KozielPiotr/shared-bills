@@ -30,7 +30,7 @@ class ApiService {
   /**
    * Sends request to api
    */
-  private call = (
+  protected call = (
     method: string,
     url: string,
     body?: any
@@ -38,6 +38,29 @@ class ApiService {
     ajax({
       method,
       url: urljoin(this.apiUrl, url),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorageService.getToken()}`
+      },
+      body
+    });
+}
+
+/**
+ * Api request with an exact url
+ */
+export class ApiServiceExact extends ApiService {
+  /**
+   * Sends request to api
+   */
+  protected call = (
+    method: string,
+    url: string,
+    body?: any
+  ): Observable<AjaxResponse> =>
+    ajax({
+      method,
+      url: url,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorageService.getToken()}`

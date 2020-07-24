@@ -6,13 +6,11 @@
  * Manages local storage
  */
 class LocalStorageService {
-  tokenKey = "token";
-
   /**
    * Gets token from local storage
    */
   public getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return localStorage.getItem("token");
   }
 
   /**
@@ -23,6 +21,26 @@ class LocalStorageService {
     token
       ? localStorage.setItem("token", token)
       : localStorage.removeItem("token");
+  }
+
+  /**
+   * Sets eventUrl to local storage to prevent data when event page is refreshed
+   * @param {string} url - url to get event data from api
+   */
+  public setEventUrl(url: string) {
+    url
+      ? localStorage.setItem("eventUrl", url)
+      : localStorage.removeItem("eventUrl");
+  }
+
+  /**
+   * Gets url of the event from local storage
+   */
+  public getEventUrl(): string {
+    const url = localStorage.getItem("eventUrl");
+    if (url) {
+      return url;
+    } else return "";
   }
 }
 

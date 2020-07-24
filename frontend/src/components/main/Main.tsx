@@ -3,6 +3,7 @@
  */
 
 import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -12,6 +13,7 @@ import Button from "@material-ui/core/Button";
 import authService from "../../services/auth";
 import useStyles from "./styles";
 import Events from "./events/Events";
+import EventDetail from "./events/eventDetail/EventDetail";
 
 /**
  * Main component for main page
@@ -31,9 +33,12 @@ function MainPage() {
           </Button>
         </Toolbar>
       </AppBar>
-      <div className={classes.content}>
-        <Events />
-      </div>
+      <Router>
+        <div className={classes.content}>
+          <Route exact path="/" component={Events} />
+          <Route path="/event/:id" component={EventDetail} />
+        </div>
+      </Router>
     </div>
   );
 }
