@@ -9,7 +9,7 @@ import Grid from "@material-ui/core/Grid";
 
 import AmountField from "./fields/NewBillAmount";
 import TitleField from "./fields/NewBillTitle";
-import useStyles from "../../styles";
+import useStyles from "./styles";
 import SelectParticipantsField from "./fields/participants/NewBillParticipantsField";
 import useObservable from "../../../../../../../hooks/observable";
 import participantService from "../../../../../../../services/participants";
@@ -71,31 +71,32 @@ function NewBillForm(props: NewBillFormProps) {
   /**
    * When user clicks a participant to include to the bill, the "included" observable is updated.
    * This observable is required to proper render of select list.
-   * Also state of the new bill is updated. Selected participant's id isadded or removed.
+   * Also state of the new bill is updated. Selected participant's id is added or removed.
    *
    * @param {ParticipantInterface} participant - participant object selected from the list
    */
   const handleSelectParticipants = (participant: ParticipantInterface) => {
-    if (!included.includes(participant)) {
-      selectParticipantsService.setIncluded([...included, participant]);
-      setNewBillData({
-        ...newBillData,
-        participants: [...newBillData.participants, participant.id]
-      });
-    } else {
-      let newIncluded: ParticipantInterface[] = [];
-      for (let participantObject of included) {
-        participantObject !== participant &&
-          newIncluded.push(participantObject);
-      }
-      selectParticipantsService.setIncluded(newIncluded);
+    if(included){
+      if (!included.includes(participant)) {
+        selectParticipantsService.setIncluded([...included, participant]);
+        setNewBillData({
+          ...newBillData,
+          participants: [...newBillData.participants, participant.id]
+        });
+      } else {
+        let newIncluded: ParticipantInterface[] = [];
+        for (let participantObject of included) {
+          participantObject !== participant &&
+            newIncluded.push(participantObject);
+        }
+        selectParticipantsService.setIncluded(newIncluded);
 
-      let newStateIncluded = [];
-      for (let participant of newIncluded) {
-        newStateIncluded.push(participant.id);
-      }
-      setNewBillData({ ...newBillData, participants: newStateIncluded });
-    }
+        let newStateIncluded = [];
+        for (let participant of newIncluded) {
+          newStateIncluded.push(participant.id);
+        }
+        setNewBillData({ ...newBillData, participants: newStateIncluded });
+      }}
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -108,10 +109,15 @@ function NewBillForm(props: NewBillFormProps) {
   }, []);
 
   return (
+    included !== undefined ? 
     <form onSubmit={handleSubmit}>
       <Grid container spacing={3}>
-        <TitleField handleChange={handleChange("title")} error={error} />
-        <AmountField handleChange={handleChange("amount")} error={error} />
+        <Grid className={classes.textGrid} item xs={6}>
+          <TitleField handleChange={handleChange("title")} error={error} />
+        </Grid>
+        <Grid className={classes.textGrid} item xs={6}>
+          <AmountField handleChange={handleChange("amount")} error={error} />
+        </Grid>
         <SelectParticipantsField
           eventParticipants={participants}
           handleSelectParticipants={handleSelectParticipants}
@@ -141,6 +147,7 @@ function NewBillForm(props: NewBillFormProps) {
         </Grid>
       </Grid>
     </form>
+    : null
   );
 }
 

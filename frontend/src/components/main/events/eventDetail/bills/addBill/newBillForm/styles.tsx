@@ -12,9 +12,11 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "3%"
     },
     participantsChoice: {
+      overflow: "auto",
       backgroundColor: theme.palette.background.paper,
       padding: theme.spacing(2, 4, 3),
-      textAlign: "center"
+      textAlign: "center",
+      maxHeight: "50%"
     },
     listRoot: {
       textAlign: "left",
@@ -22,7 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     includedList: {
       width: "90%"
-    }
+    },
+    modalButtons: {
+      display: "flex",
+      justifyContent: "space-around"
+    },
   })
 );
 

@@ -26,7 +26,7 @@ function AddBill(props: AddBillProps) {
   const classes = useStyles();
 
   return (
-    <div>
+    <div style={{alignContent: "center"}}>
       <Modal className={classes.modal} open={props.open}>
         <div className={classes.paper}>
           <Typography

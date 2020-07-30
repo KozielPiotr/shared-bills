@@ -7,11 +7,14 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     modal: {
+      overflow: "auto",
       display: "flex",
       alignItems: "center",
       justifyContent: "center"
     },
     paper: {
+      maxHeight: "80%",
+      overflowY: "auto",
       position: "absolute",
       width: 400,
       backgroundColor: theme.palette.background.paper,

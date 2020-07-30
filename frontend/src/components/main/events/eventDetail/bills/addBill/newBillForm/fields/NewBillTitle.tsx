@@ -20,18 +20,16 @@ function TitleField(props: TitleFieldProps) {
   const classes = useStyles();
 
   return (
-    <Grid className={classes.textGrid} item xs={6}>
-      <TextField
-        className={classes.textField}
-        required
-        error={props.error}
-        id="outlined-required-email"
-        label="title"
-        variant="outlined"
-        fullWidth
-        onChange={props.handleChange}
-      />
-    </Grid>
+    <TextField
+    className={classes.textField}
+    required
+    error={props.error}
+    id="outlined-required-email"
+    label="title"
+    variant="outlined"
+    fullWidth
+    onChange={props.handleChange}
+    />
   );
 }
 
