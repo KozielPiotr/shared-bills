@@ -21,7 +21,6 @@ import SelectParticipant from "./selectParticipants/SelectParticipants";
 interface NamesTableProps {
   bill: BillInterface;
   eventId: number;
-  fetchBill: () => void;
   eventParticipants: ParticipantInterface[];
 }
 

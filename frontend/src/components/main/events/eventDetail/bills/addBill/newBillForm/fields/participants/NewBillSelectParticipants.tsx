@@ -4,7 +4,6 @@
 
 import React from "react";
 
-import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
 
 import Items from "./SelectItems";
@@ -29,14 +28,14 @@ function SelectParticipants(props: SelectParticipantsProps) {
   return props.eventParticipants ? (
     <div className={classes.listRoot}>
       <List className={classes.includedList}>
-            {props.eventParticipants.map(participant => (
-              <Items
-                participant={participant}
-                key={participant.id}
-                includedParticipants={includedParticipants}
-                handleSelectParticipants={props.handleSelectParticipants}
-              />
-            ))}
+        {props.eventParticipants.map(participant => (
+          <Items
+            participant={participant}
+            key={participant.id}
+            includedParticipants={includedParticipants}
+            handleSelectParticipants={props.handleSelectParticipants}
+          />
+        ))}
       </List>
     </div>
   ) : null;

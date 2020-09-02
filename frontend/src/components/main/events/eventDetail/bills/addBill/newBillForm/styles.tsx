@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     modalButtons: {
       display: "flex",
       justifyContent: "space-around"
-    },
+    }
   })
 );
 

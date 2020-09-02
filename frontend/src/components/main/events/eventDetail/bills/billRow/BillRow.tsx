@@ -46,7 +46,11 @@ function BillRow(props: BillRowProps) {
         eventId={props.eventId}
         eventParticipants={participants}
       />
-      <PayerCell payerName={payer.username} />
+      <PayerCell
+        payer={payer}
+        eventParticipants={participants}
+        billUrl={props.billUrl}
+      />
     </TableRow>
   ) : null;
 }

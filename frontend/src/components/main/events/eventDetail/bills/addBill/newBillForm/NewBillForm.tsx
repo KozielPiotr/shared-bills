@@ -9,8 +9,9 @@ import Grid from "@material-ui/core/Grid";
 
 import AmountField from "./fields/NewBillAmount";
 import TitleField from "./fields/NewBillTitle";
-import useStyles from "./styles";
+import PaymasterField from "./fields/payer/NewBillPayer";
 import SelectParticipantsField from "./fields/participants/NewBillParticipantsField";
+import useStyles from "./styles";
 import useObservable from "../../../../../../../hooks/observable";
 import participantService from "../../../../../../../services/participants";
 import selectParticipantsService from "../../../services";
@@ -68,6 +69,14 @@ function NewBillForm(props: NewBillFormProps) {
     });
   };
 
+  const handleChangePayer = (payerId: number) => {
+    setNewBillData({
+      ...newBillData,
+      payer: payerId
+    });
+    console.log(payerId);
+  };
+
   /**
    * When user clicks a participant to include to the bill, the "included" observable is updated.
    * This observable is required to proper render of select list.
@@ -76,7 +85,7 @@ function NewBillForm(props: NewBillFormProps) {
    * @param {ParticipantInterface} participant - participant object selected from the list
    */
   const handleSelectParticipants = (participant: ParticipantInterface) => {
-    if(included){
+    if (included) {
       if (!included.includes(participant)) {
         selectParticipantsService.setIncluded([...included, participant]);
         setNewBillData({
@@ -96,7 +105,8 @@ function NewBillForm(props: NewBillFormProps) {
           newStateIncluded.push(participant.id);
         }
         setNewBillData({ ...newBillData, participants: newStateIncluded });
-      }}
+      }
+    }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -106,22 +116,33 @@ function NewBillForm(props: NewBillFormProps) {
 
   React.useEffect(() => {
     participantService.fetchParticipants(props.participantsUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    included !== undefined ? 
+  return included !== undefined ? (
     <form onSubmit={handleSubmit}>
       <Grid container spacing={3}>
-        <Grid className={classes.textGrid} item xs={6}>
+        <Grid className={classes.textGrid} item xs={4}>
           <TitleField handleChange={handleChange("title")} error={error} />
         </Grid>
-        <Grid className={classes.textGrid} item xs={6}>
+
+        <Grid className={classes.textGrid} item xs={4}>
           <AmountField handleChange={handleChange("amount")} error={error} />
         </Grid>
+
+        <Grid className={classes.textGrid} item xs={4}>
+          <PaymasterField
+            participants={participants}
+            paymaster={newBillData.payer}
+            handleChangePayer={handleChangePayer}
+          />
+        </Grid>
+
         <SelectParticipantsField
           eventParticipants={participants}
           handleSelectParticipants={handleSelectParticipants}
         />
+
         <Grid item xs={12}>
           <div className={classes.modalButtons}>
             <Button
@@ -147,8 +168,7 @@ function NewBillForm(props: NewBillFormProps) {
         </Grid>
       </Grid>
     </form>
-    : null
-  );
+  ) : null;
 }
 
 export default NewBillForm;

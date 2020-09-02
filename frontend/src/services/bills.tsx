@@ -13,6 +13,7 @@ import { BillInterface } from "../interfaces/interfaces";
  */
 class BillsService {
   public bills$ = new BehaviorSubject<BillInterface[] | null>(null);
+  public bill$ = new BehaviorSubject<BillInterface | null>(null);
   public updatedBill$ = new BehaviorSubject<BillInterface | null>(null);
 
   private apiServiceExact = new ApiServiceExact();
@@ -30,6 +31,18 @@ class BillsService {
   };
 
   /**
+   * Gets bill object data
+   */
+  public fetchBill = (billUrl: string) => {
+    this.apiServiceExact
+      .get(billUrl)
+      .pipe(map(ajax => ajax.response))
+      .subscribe(bill => {
+        this.bill$.next(bill);
+      });
+  };
+
+  /**
    * Updats bill object
    */
   public updateBill = (
@@ -40,8 +53,6 @@ class BillsService {
       .patch(url, billData)
       .pipe(map(ajax => ajax.response));
   };
-
-  public addParticipantToBill = (eventId: number, participantId: number) => {};
 }
 
 const billsService = new BillsService();

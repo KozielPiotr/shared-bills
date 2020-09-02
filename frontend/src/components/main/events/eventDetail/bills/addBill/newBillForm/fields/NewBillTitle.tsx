@@ -5,7 +5,6 @@
 import React from "react";
 
 import useStyles from "../styles";
-import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 
 interface TitleFieldProps {
@@ -21,14 +20,14 @@ function TitleField(props: TitleFieldProps) {
 
   return (
     <TextField
-    className={classes.textField}
-    required
-    error={props.error}
-    id="outlined-required-email"
-    label="title"
-    variant="outlined"
-    fullWidth
-    onChange={props.handleChange}
+      className={classes.textField}
+      required
+      error={props.error}
+      id="outlined-required-email"
+      label="title"
+      variant="outlined"
+      fullWidth
+      onChange={props.handleChange}
     />
   );
 }
