@@ -11,7 +11,7 @@ import participantService from "../../../../../../services/participants";
 import TitleCell from "./billCells/TitleCell";
 import AmountCell from "./billCells/AmountCell";
 import ParticipantsCell from "./billCells/participantsCell/ParticipantsCell";
-import PayerCell from "./billCells/PayerCell";
+import PayerCell from "./billCells/payerCell/PayerCell";
 
 interface BillRowProps {
   billTitle: string;

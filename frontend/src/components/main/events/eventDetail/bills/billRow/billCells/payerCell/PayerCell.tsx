@@ -8,12 +8,12 @@ import TableCell from "@material-ui/core/TableCell";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { ParticipantInterface } from "../../../../../../../interfaces/interfaces";
+import { ParticipantInterface } from "../../../../../../../../interfaces/interfaces";
 import MenuItem from "@material-ui/core/MenuItem";
 
-import BillsService from "../../../../../../../services/bills";
-import useObservable from "../../../../../../../hooks/observable";
+import BillsService from "../../../../../../../../services/bills";
+import useObservable from "../../../../../../../../hooks/observable";
+import useStyles from "../../../styles";
 
 interface PayerCellProps {
   payer: ParticipantInterface;
@@ -21,17 +21,8 @@ interface PayerCellProps {
   billUrl: string;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120
-    }
-  })
-);
-
 /**
- * Shows bill's current payer. Payer can be changed.
+ * Shows bill's current payer. Payer can be changed when user points this cell.
  */
 function PayerCell(props: PayerCellProps) {
   const classes = useStyles();
@@ -45,15 +36,10 @@ function PayerCell(props: PayerCellProps) {
     BillsService.updateBill(props.billUrl, oldBillData).subscribe();
   };
 
-  // React.useEffect(() => {
-  //   BillsService.fetchBill(props.billUrl);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   return (
     <TableCell align="right">
-      <FormControl className={classes.formControl}>
-        <InputLabel id="payer-label">Age</InputLabel>
+      <FormControl className={classes.changePayerForm}>
+        <InputLabel id="payer-label">Payer</InputLabel>
         <Select
           labelId="payer-label"
           id="payer"

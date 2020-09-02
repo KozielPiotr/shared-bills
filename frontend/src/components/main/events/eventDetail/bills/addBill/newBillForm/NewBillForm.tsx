@@ -16,6 +16,7 @@ import useObservable from "../../../../../../../hooks/observable";
 import participantService from "../../../../../../../services/participants";
 import selectParticipantsService from "../../../services";
 import { ParticipantInterface } from "../../../../../../../interfaces/interfaces";
+import billsService from "../../../../../../../services/bills";
 
 interface NewBillFormProps {
   handleCloseAddBill: () => void;
@@ -74,7 +75,6 @@ function NewBillForm(props: NewBillFormProps) {
       ...newBillData,
       payer: payerId
     });
-    console.log(payerId);
   };
 
   /**
@@ -111,7 +111,8 @@ function NewBillForm(props: NewBillFormProps) {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(newBillData);
+    props.handleCloseAddBill();
+    billsService.createBill(props.eventId, newBillData).subscribe();
   };
 
   React.useEffect(() => {

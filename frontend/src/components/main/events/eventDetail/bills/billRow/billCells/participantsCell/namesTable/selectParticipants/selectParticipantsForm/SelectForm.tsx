@@ -13,7 +13,7 @@ import {
   ParticipantInterface,
   BillInterface
 } from "../../../../../../../../../../../interfaces/interfaces";
-import BillsService from "../../../../../../../../../../../services/bills";
+import billsService from "../../../../../../../../../../../services/bills";
 import selectParticipantsService from "../../../../../../../services";
 import useStyles from "../styles";
 
@@ -36,9 +36,9 @@ function SelectForm(props: SelectFormProps) {
         .map(participant => participant.id)
     ];
     newBill.participants = participantList;
-    BillsService.updateBill(props.bill.url, newBill).subscribe(() =>
-      props.handleOpen()
-    );
+    billsService
+      .updateBill(props.bill.url, newBill)
+      .subscribe(() => props.handleOpen());
   };
 
   React.useEffect(() => {

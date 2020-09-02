@@ -3,16 +3,16 @@
  */
 
 import { BehaviorSubject, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 
-import { ApiServiceExact } from "./api";
+import apiService, { ApiServiceExact } from "./api";
 import { BillInterface } from "../interfaces/interfaces";
 
 /**
  * Manages event's bills
  */
 class BillsService {
-  public bills$ = new BehaviorSubject<BillInterface[] | null>(null);
+  public bills$ = new BehaviorSubject<BillInterface[]>([]);
   public bill$ = new BehaviorSubject<BillInterface | null>(null);
   public updatedBill$ = new BehaviorSubject<BillInterface | null>(null);
 
@@ -52,6 +52,30 @@ class BillsService {
     return this.apiServiceExact
       .patch(url, billData)
       .pipe(map(ajax => ajax.response));
+  };
+
+  public createBill = (
+    eventId: number,
+    billData: {
+      title: string;
+      amount: string;
+      participants: number[];
+      payer: number;
+    }
+  ): Observable<BillInterface> => {
+    return apiService
+      .post(`/events/${eventId}/bills/`, {
+        participants: billData.participants,
+        title: billData.title,
+        amount: billData.amount,
+        payer: billData.payer
+      })
+      .pipe(
+        map(ajax => ajax.response),
+        tap((bill: BillInterface) =>
+          this.bills$.next([...this.bills$.getValue(), bill])
+        )
+      );
   };
 }
 

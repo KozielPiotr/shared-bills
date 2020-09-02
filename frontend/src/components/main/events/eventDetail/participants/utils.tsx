@@ -15,9 +15,9 @@ export function countBills(bills: BillInterface[], participantId: number) {
 
   if (bills != null) {
     for (let bill of bills) {
-      let participants = bill.participants;
+      const participants = bill.participants;
       for (let i = 0; i < participants.length; ++i) {
-        bill.participants[i] === participantId && billsNumber++;
+        participants[i] === participantId && billsNumber++;
       }
     }
   }

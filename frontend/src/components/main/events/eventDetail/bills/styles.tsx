@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme: Theme) =>
     errorMsg: {
       textAlign: "center",
       marginTop: "3%"
+    },
+    changePayerForm: {
+      margin: theme.spacing(1),
+      minWidth: 120
     }
   })
 );
