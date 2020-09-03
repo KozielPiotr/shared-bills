@@ -43,6 +43,21 @@ class BillsService {
   };
 
   /**
+   * Gets bill object data and passes it to given subject
+   */
+  public fetchBillToObject = (
+    billUrl: string,
+    obj: BehaviorSubject<BillInterface | null>
+  ) => {
+    this.apiServiceExact
+      .get(billUrl)
+      .pipe(map(ajax => ajax.response))
+      .subscribe(bill => {
+        obj.next(bill);
+      });
+  };
+
+  /**
    * Updats bill object
    */
   public updateBill = (

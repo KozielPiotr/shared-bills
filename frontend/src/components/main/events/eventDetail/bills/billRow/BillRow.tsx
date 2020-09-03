@@ -12,6 +12,9 @@ import TitleCell from "./billCells/TitleCell";
 import AmountCell from "./billCells/AmountCell";
 import ParticipantsCell from "./billCells/participantsCell/ParticipantsCell";
 import PayerCell from "./billCells/payerCell/PayerCell";
+import { BehaviorSubject } from "rxjs";
+import { BillInterface } from "../../../../../../interfaces/interfaces";
+import billsService from "../../../../../../services/bills";
 
 interface BillRowProps {
   billTitle: string;
@@ -28,31 +31,32 @@ interface BillRowProps {
  * Component with detailed info about the bill
  */
 function BillRow(props: BillRowProps) {
-  const payer = useObservable(participantService.participant$);
   const participants = useObservable(participantService.participants$);
+  const bill$ = new BehaviorSubject<BillInterface | null>(null);
+  const bill = useObservable(bill$);
 
   React.useEffect(() => {
-    participantService.fetchParticipantById(props.eventId, props.payerId);
     participantService.fetchParticipants(props.participantsUrl);
+    billsService.fetchBillToObject(props.billUrl, bill$);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return payer ? (
+  return (
     <TableRow>
       <TitleCell billTitle={props.billTitle} />
       <AmountCell amount={props.amount} currency={props.currency} />
       <ParticipantsCell
-        billUrl={props.billUrl}
+        bill={bill}
         eventId={props.eventId}
         eventParticipants={participants}
       />
       <PayerCell
-        payer={payer}
+        payerId={props.payerId}
         eventParticipants={participants}
-        billUrl={props.billUrl}
+        bill={bill}
       />
     </TableRow>
-  ) : null;
+  );
 }
 
 export default BillRow;

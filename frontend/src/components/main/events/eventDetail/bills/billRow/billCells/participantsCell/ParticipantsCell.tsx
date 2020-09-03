@@ -9,13 +9,14 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import TableCell from "@material-ui/core/TableCell";
 
-import { ParticipantInterface } from "../../../../../../../../interfaces/interfaces";
-import useObservable from "../../../../../../../../hooks/observable";
+import {
+  ParticipantInterface,
+  BillInterface
+} from "../../../../../../../../interfaces/interfaces";
 import NamesTable from "./namesTable/NamesTable";
-import BillsService from "../../../../../../../../services/bills";
 
 interface ParticipantsCellProps {
-  billUrl: string;
+  bill: BillInterface;
   eventId: number;
   eventParticipants: ParticipantInterface[];
 }
@@ -25,26 +26,20 @@ interface ParticipantsCellProps {
  */
 function ParticipantsCell(props: ParticipantsCellProps) {
   const [open, setOpen] = React.useState(false);
-  const bill = useObservable(BillsService.bill$);
 
   const openParticipantsList = () => {
     setOpen(!open);
   };
 
-  React.useEffect(() => {
-    BillsService.fetchBill(props.billUrl);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return bill && bill.participants ? (
+  return props.bill && props.bill.participants ? (
     <TableCell align="right">
-      {bill.participants.length}
+      {props.bill.participants.length}
       <IconButton size="small" onClick={openParticipantsList}>
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
       {open ? (
         <NamesTable
-          bill={bill}
+          bill={props.bill}
           eventId={props.eventId}
           eventParticipants={props.eventParticipants}
         />

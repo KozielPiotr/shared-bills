@@ -8,17 +8,19 @@ import TableCell from "@material-ui/core/TableCell";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
-import { ParticipantInterface } from "../../../../../../../../interfaces/interfaces";
+import {
+  ParticipantInterface,
+  BillInterface
+} from "../../../../../../../../interfaces/interfaces";
 import MenuItem from "@material-ui/core/MenuItem";
 
-import BillsService from "../../../../../../../../services/bills";
-import useObservable from "../../../../../../../../hooks/observable";
+import billsService from "../../../../../../../../services/bills";
 import useStyles from "../../../styles";
 
 interface PayerCellProps {
-  payer: ParticipantInterface;
+  payerId: number;
   eventParticipants: ParticipantInterface[];
-  billUrl: string;
+  bill: BillInterface;
 }
 
 /**
@@ -26,24 +28,24 @@ interface PayerCellProps {
  */
 function PayerCell(props: PayerCellProps) {
   const classes = useStyles();
-  const [payer, setPayer] = React.useState(props.payer.id);
-  const billData = useObservable(BillsService.bill$);
+  const [payerId, setPayerId] = React.useState(props.payerId);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setPayer(event.target.value as number);
-    let oldBillData = billData;
-    oldBillData.payer = event.target.value;
-    BillsService.updateBill(props.billUrl, oldBillData).subscribe();
+    setPayerId(event.target.value as number);
+    let oldBillData = props.bill;
+
+    oldBillData.payer = event.target.value as number;
+    billsService.updateBill(props.bill.url, oldBillData).subscribe();
   };
 
-  return (
+  return payerId && props.eventParticipants ? (
     <TableCell align="right">
       <FormControl className={classes.changePayerForm}>
         <InputLabel id="payer-label">Payer</InputLabel>
         <Select
           labelId="payer-label"
           id="payer"
-          value={payer}
+          value={payerId}
           onChange={handleChange}
         >
           {props.eventParticipants.map(participant => (
@@ -54,7 +56,7 @@ function PayerCell(props: PayerCellProps) {
         </Select>
       </FormControl>
     </TableCell>
-  );
+  ) : null;
 }
 
 export default PayerCell;
